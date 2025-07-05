@@ -1,0 +1,24 @@
+nextflow_pipeline {
+
+    name "Test Workflow CORE_PHYLOGENIES"
+    script "main.nf"
+
+    test("Terminates properly when given complete input") { 
+
+        when {
+            params {
+                data = "${projectDir}/tests/data"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.trace.succeeded().size() == 3 },
+                { assert workflow.trace.failed().size() == 0 }, 
+                { assert workflow.trace.tasks().size() == 3 }
+            )
+        }
+        
+    }
+}
