@@ -1,0 +1,8 @@
+# Nextflow related files and directories
+work/
+./data/
+results/
+.nextflow*
+.nf-test*
+.ipynb_checkpoints/
+.virtual_documents/
