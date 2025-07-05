@@ -1,7 +1,7 @@
 process CALCULATE_SUBSTITUTION_MODEL {
     cpus "${params.calculate_substitution_model_cpus}"
     memory "${params.calculate_substitution_model_memory} GB"
-    container "quay.io/biocontainers/modeltest-ng:0.1.7--hf316886_3"
+    container "${params.docker_modeltest_ng}"
     publishDir "${params.results}/calculate-substitution-model", mode: "copy"
 
     input:

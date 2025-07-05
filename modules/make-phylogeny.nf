@@ -1,7 +1,7 @@
 process MAKE_PHYLOGENY {
     cpus "${params.make_phylogeny_cpus}"
     memory "${params.make_phylogeny_memory} GB"
-    container "quay.io/biocontainers/raxml-ng:0.9.0--h192cbe9_1"
+    container "${params.docker_raxml_ng}"
     publishDir "${params.results}/make-phylogeny", mode: "copy"
     cache "deep"
 
