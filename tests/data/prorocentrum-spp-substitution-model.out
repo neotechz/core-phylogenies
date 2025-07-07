@@ -1,0 +1,180 @@
+--------------------------------------------------------------------------------
+ModelTest-NG v0.1.7
+
+Input data:
+  MSA:        prorocentrum-spp-aligned.fasta
+  Tree:       Maximum parsimony
+    file:           -
+  #taxa:            5
+  #sites:           5320
+  #patterns:        228
+  Max. thread mem:  0 MB
+
+Output:
+  Log:           prorocentrum-spp-substitution-model.log
+  Starting tree: prorocentrum-spp-substitution-model.tree
+  Results:       prorocentrum-spp-substitution-model.out
+
+Selection options:
+  # dna schemes:      3
+  # dna models:       12
+  include model parameters:
+    Uniform:         true
+    p-inv (+I):      true
+    gamma (+G):      true
+    both (+I+G):     true
+    free rates (+R): false
+    fixed freqs:     false
+    estimated freqs: true
+    #categories:     4
+  gamma rates mode:   mean
+  asc bias:           none
+  epsilon (opt):      0.01
+  epsilon (par):      0.05
+  keep branches:      false
+
+Additional options:
+  verbosity:        very low
+  threads:          4/8
+  RNG seed:         119318
+  subtree repeats:  enabled
+--------------------------------------------------------------------------------
+
+BIC       model              K            lnL          score          delta    weight
+--------------------------------------------------------------------------------
+       1  GTR+G4             9    -10340.7275     20818.7227         0.0000    0.8956
+       2  GTR+I              9    -10343.3660     20823.9996         5.2769    0.0640
+       3  GTR+I+G4          10    -10339.9692     20825.7853         7.0626    0.0262
+       4  HKY+G4             5    -10362.2118     20827.3744         8.6517    0.0118
+       5  HKY+I              5    -10363.9065     20830.7637        12.0410    0.0022
+       6  HKY+I+G4           6    -10362.2145     20835.9589        17.2362    0.0002
+       7  GTR                8    -10405.4044     20939.4972       120.7745    0.0000
+       8  HKY                4    -10428.2439     20950.8593       132.1366    0.0000
+       9  F81+G4             4    -10518.1744     21130.7203       311.9976    0.0000
+      10  F81+I              4    -10519.4140     21133.1995       314.4768    0.0000
+--------------------------------------------------------------------------------
+Best model according to BIC
+---------------------------
+Model:              GTR+G4
+lnL:                -10340.7275
+Frequencies:        0.2616 0.2050 0.2729 0.2604
+Subst. Rates:       0.7297 3.0492 1.0872 0.7114 7.3622 1.0000 
+Inv. sites prop:    -
+Gamma shape:        0.1928
+Score:              20818.7227
+Weight:             0.8956
+---------------------------
+Parameter importances
+---------------------------
+P.Inv:              0.0662
+Gamma:              0.9074
+Gamma-Inv:          0.0264
+Frequencies:        1.0000
+---------------------------
+Model averaged estimates
+---------------------------
+P.Inv:              0.6637
+Alpha:              0.1926
+Alpha-P.Inv:        0.4396
+P.Inv-Alpha:        0.3505
+Frequencies:        0.2615 0.2051 0.2729 0.2605 
+
+Commands:
+  > phyml  -i prorocentrum-spp-aligned.fasta -m 012345 -f m -v 0 -a e -c 4 -o tlr
+  > raxmlHPC-SSE3 -s prorocentrum-spp-aligned.fasta -m GTRGAMMAX -n EXEC_NAME -p PARSIMONY_SEED
+  > raxml-ng --msa prorocentrum-spp-aligned.fasta --model GTR+G4
+  > paup -s prorocentrum-spp-aligned.fasta
+  > iqtree -s prorocentrum-spp-aligned.fasta -m GTR+G4
+
+AIC       model              K            lnL          score          delta    weight
+--------------------------------------------------------------------------------
+       1  GTR+G4             9    -10340.7275     20713.4551         0.0000    0.5386
+       2  GTR+I+G4          10    -10339.9692     20713.9385         0.4834    0.4229
+       3  GTR+I              9    -10343.3660     20718.7320         5.2769    0.0385
+       4  HKY+G4             5    -10362.2118     20748.4236        34.9686    0.0000
+       5  HKY+I+G4           6    -10362.2145     20750.4290        36.9739    0.0000
+       6  HKY+I              5    -10363.9065     20751.8129        38.3579    0.0000
+       7  GTR                8    -10405.4044     20840.8088       127.3537    0.0000
+       8  HKY                4    -10428.2439     20878.4878       165.0327    0.0000
+       9  F81+G4             4    -10518.1744     21058.3488       344.8937    0.0000
+      10  F81+I              4    -10519.4140     21060.8280       347.3729    0.0000
+--------------------------------------------------------------------------------
+Best model according to AIC
+---------------------------
+Model:              GTR+G4
+lnL:                -10340.7275
+Frequencies:        0.2616 0.2050 0.2729 0.2604
+Subst. Rates:       0.7297 3.0492 1.0872 0.7114 7.3622 1.0000 
+Inv. sites prop:    -
+Gamma shape:        0.1928
+Score:              20713.4551
+Weight:             0.5386
+---------------------------
+Parameter importances
+---------------------------
+P.Inv:              0.0385
+Gamma:              0.5386
+Gamma-Inv:          0.4229
+Frequencies:        1.0000
+---------------------------
+Model averaged estimates
+---------------------------
+P.Inv:              0.6629
+Alpha:              0.1928
+Alpha-P.Inv:        0.4375
+P.Inv-Alpha:        0.3495
+Frequencies:        0.2616 0.2049 0.2730 0.2604 
+
+Commands:
+  > phyml  -i prorocentrum-spp-aligned.fasta -m 012345 -f m -v 0 -a e -c 4 -o tlr
+  > raxmlHPC-SSE3 -s prorocentrum-spp-aligned.fasta -m GTRGAMMAX -n EXEC_NAME -p PARSIMONY_SEED
+  > raxml-ng --msa prorocentrum-spp-aligned.fasta --model GTR+G4
+  > paup -s prorocentrum-spp-aligned.fasta
+  > iqtree -s prorocentrum-spp-aligned.fasta -m GTR+G4
+
+AICc      model              K            lnL          score          delta    weight
+--------------------------------------------------------------------------------
+       1  GTR+G4             9    -10340.7275     20713.4551         0.0000    0.5386
+       2  GTR+I+G4          10    -10339.9692     20713.9385         0.4834    0.4229
+       3  GTR+I              9    -10343.3660     20718.7320         5.2769    0.0385
+       4  HKY+G4             5    -10362.2118     20748.4236        34.9686    0.0000
+       5  HKY+I+G4           6    -10362.2145     20750.4290        36.9739    0.0000
+       6  HKY+I              5    -10363.9065     20751.8129        38.3579    0.0000
+       7  GTR                8    -10405.4044     20840.8088       127.3537    0.0000
+       8  HKY                4    -10428.2439     20878.4878       165.0327    0.0000
+       9  F81+G4             4    -10518.1744     21058.3488       344.8937    0.0000
+      10  F81+I              4    -10519.4140     21060.8280       347.3729    0.0000
+--------------------------------------------------------------------------------
+Best model according to AICc
+---------------------------
+Model:              GTR+G4
+lnL:                -10340.7275
+Frequencies:        0.2616 0.2050 0.2729 0.2604
+Subst. Rates:       0.7297 3.0492 1.0872 0.7114 7.3622 1.0000 
+Inv. sites prop:    -
+Gamma shape:        0.1928
+Score:              20713.4551
+Weight:             0.5386
+---------------------------
+Parameter importances
+---------------------------
+P.Inv:              0.0385
+Gamma:              0.5386
+Gamma-Inv:          0.4229
+Frequencies:        1.0000
+---------------------------
+Model averaged estimates
+---------------------------
+P.Inv:              0.6629
+Alpha:              0.1928
+Alpha-P.Inv:        0.4375
+P.Inv-Alpha:        0.3495
+Frequencies:        0.2616 0.2049 0.2730 0.2604 
+
+Commands:
+  > phyml  -i prorocentrum-spp-aligned.fasta -m 012345 -f m -v 0 -a e -c 4 -o tlr
+  > raxmlHPC-SSE3 -s prorocentrum-spp-aligned.fasta -m GTRGAMMAX -n EXEC_NAME -p PARSIMONY_SEED
+  > raxml-ng --msa prorocentrum-spp-aligned.fasta --model GTR+G4
+  > paup -s prorocentrum-spp-aligned.fasta
+  > iqtree -s prorocentrum-spp-aligned.fasta -m GTR+G4
+Done

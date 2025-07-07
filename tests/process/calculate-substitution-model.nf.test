@@ -1,0 +1,51 @@
+nextflow_process {
+
+    name "Test Process CALCULATE_SUBSTITUTION_MODEL"
+    script "modules/calculate-substitution-model.nf"
+    process "CALCULATE_SUBSTITUTION_MODEL"
+
+    test("Terminates with no errors") {
+
+        when {
+            params {
+                
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta"])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success }
+            )
+        }
+
+    }
+
+    test("Produces output with correct ID and MD5 checksum") {
+
+        when {
+            params {
+
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta"])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out[0][0][0] == "prorocentrum-spp" },
+                { assert new File(process.out[0][0][1]).exists()} // {id}-substitution-model.out md5sum not constant
+            )
+        }
+        
+    }
+
+}

@@ -6,3 +6,4 @@ results/
 .nf-test*
 .ipynb_checkpoints/
 .virtual_documents/
+playground/
