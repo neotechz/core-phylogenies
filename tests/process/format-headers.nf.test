@@ -1,0 +1,54 @@
+nextflow_process {
+
+    name "Test Process FORMAT_HEADERS"
+    script "modules/format-headers.nf"
+    process "FORMAT_HEADERS"
+
+    test("Terminates with no errors") {
+
+        when {
+            params {
+                
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-raw"])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success }
+            )
+        }
+
+    }
+
+    test("Produces output with correct ID and MD5 checksum") {
+
+        when {
+            params {
+
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-raw"])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out[0][0][0] == "prorocentrum-spp" },
+                { assert path("${process.out[0][0][1]}/18S.fasta").exists() },
+                { assert path("${process.out[0][0][1]}/18S.fasta").md5 == "04b8a76cdc698d8d1060ee303273a88f"},
+                { assert path("${process.out[0][0][1]}/28S.fasta").exists() },
+                { assert path("${process.out[0][0][1]}/28S.fasta").md5 == "66b2dcf6a9ead06442eb8dbbb349f93a"}
+            )
+        }
+        
+    }
+
+}
