@@ -8,10 +8,10 @@ process FORMAT_HEADERS {
         tuple val(id), path(input_alignments) // ${input_alignments} is a directory!
     
     output:
-        tuple val(id), path("concatenated-alignment.fasta")
+        tuple val(id), path("formatted-alignments/")
 
     script:
         """
-        # format-headers.py ${input_alignments}
+        format-headers.py ${input_alignments}
         """
 }
