@@ -1,17 +1,17 @@
 process FILTER_BY_POLYMORPHIC_SITES {
     cpus "${params.filter_by_polymorphic_sites_cpus}"
     memory "${params.filter_by_polymorphic_sites_memory} GB"
-    container "${params.docker_python}"
     publishDir "${params.results}/filter-by-polymorphic-sites", mode: "copy"
+    container "${container}"
 
     input:
-        tuple val(id), path(input_alignments), val(cutoff) // ${input_alignments} is a directory!
+        tuple val(id), path(input_alignments), val(cutoff), val(container) // ${input_alignments} is a directory!
     
     output:
-        tuple val(id), path("output-alignments/")
+        tuple val(id), path("${id}-filtered-1/")
 
     script:
         """
-        # filter-by-polymorphic-sites.py ${input_alignments} ${cutoff}
+        filter-by-normalized-polymorphic-sites.py ${input_alignments} ${id}-filtered-1 ${cutoff}
         """
 }

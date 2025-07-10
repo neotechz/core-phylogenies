@@ -1,0 +1,51 @@
+nextflow_process {
+
+    name "Test Process FILTER_BY_POLYMORPHIC_SITES"
+    script "modules/filter-by-polymorphic-sites.nf"
+    process "FILTER_BY_POLYMORPHIC_SITES"
+
+    test("Terminates with no errors") {
+
+        when {
+            params {
+                filter_by_polymorphic_sites_cutoff = 0.05
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-formatted", "${params.filter_by_polymorphic_sites_cutoff}"])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success }
+            )
+        }
+
+    }
+
+    test("Produces output with correct ID and MD5 checksum") {
+
+        when {
+            params {
+                filter_by_polymorphic_sites_cutoff = 0.05
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-formatted", "${params.filter_by_polymorphic_sites_cutoff}"])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out[0][0][0] == "prorocentrum-spp" },
+                { assert path("${process.out[0][0][1]}").exists() }
+            )
+        }
+        
+    }
+
+}

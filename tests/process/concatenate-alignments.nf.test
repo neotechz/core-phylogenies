@@ -1,0 +1,51 @@
+nextflow_process {
+
+    name "Test Process CONCATENATE_ALIGNMENTS"
+    script "modules/concatenate-alignments.nf"
+    process "CONCATENATE_ALIGNMENTS"
+
+    test("Terminates with no errors") {
+
+        when {
+            params {
+                
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-formatted"])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success }
+            )
+        }
+
+    }
+
+    test("Produces output with correct ID and MD5 checksum") {
+
+        when {
+            params {
+
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-formatted"])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out[0][0][0] == "prorocentrum-spp" },
+                { assert path("${process.out[0][0][1]}").exists() }
+            )
+        }
+        
+    }
+
+}

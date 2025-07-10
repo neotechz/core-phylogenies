@@ -1,11 +1,11 @@
 process CALCULATE_SUBSTITUTION_MODEL {
     cpus "${params.calculate_substitution_model_cpus}"
     memory "${params.calculate_substitution_model_memory} GB"
-    container "${params.docker_modeltest_ng}"
     publishDir "${params.results}/calculate-substitution-model", mode: "copy"
+    container "${container}"
 
     input:
-        tuple val(id), path(alignment)
+        tuple val(id), path(alignment), val(container)
     
     output:
         tuple val(id), path("${id}-substitution-model.out")
