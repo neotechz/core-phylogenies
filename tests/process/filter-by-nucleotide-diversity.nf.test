@@ -1,0 +1,53 @@
+nextflow_process {
+
+    name "Test Process FILTER_BY_NUCLEOTIDE_DIVERSITY"
+    script "modules/filter-by-nucleotide-diversity.nf"
+    process "FILTER_BY_NUCLEOTIDE_DIVERSITY"
+
+    test("Terminates with no errors") {
+
+        when {
+            params {
+                filter_by_nucleotide_diversity_start = 0.1
+                filter_by_nucleotide_diversity_end = 0.8
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-formatted", "${params.filter_by_nucleotide_diversity_start}", "${params.filter_by_nucleotide_diversity_end}"])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success }
+            )
+        }
+
+    }
+
+    test("Produces output with correct ID and MD5 checksum") {
+
+        when {
+            params {
+                filter_by_nucleotide_diversity_start = 0.1
+                filter_by_nucleotide_diversity_end = 0.8
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-formatted", "${params.filter_by_nucleotide_diversity_start}", "${params.filter_by_nucleotide_diversity_end}"])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out[0][0][0] == "prorocentrum-spp" },
+                { assert path("${process.out[0][0][1]}").exists() }
+            )
+        }
+        
+    }
+
+}
