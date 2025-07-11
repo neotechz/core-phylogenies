@@ -7,16 +7,16 @@ nextflow_pipeline {
 
         when {
             params {
-                data = "${projectDir}/tests/data"
+                data = "${projectDir}/tests/data/prorocentrum-spp-pipeline"
             }
         }
 
         then {
             assertAll(
                 { assert workflow.success },
-                { assert workflow.trace.succeeded().size() == 3 },
+                { assert workflow.trace.succeeded().size() == 10 },
                 { assert workflow.trace.failed().size() == 0 }, 
-                { assert workflow.trace.tasks().size() == 3 }
+                { assert workflow.trace.tasks().size() == 10 }
             )
         }
         
