@@ -8,10 +8,10 @@ process CONCATENATE_ALIGNMENTS {
         tuple val(id), path(input_alignments) // ${input_alignments} is a directory!
     
     output:
-        tuple val(id), path("concatenated-alignment.fasta")
+        tuple val(id), path("${id}-concatenated.fasta")
 
     script:
         """
-        # concatenate-alignments.py ${input_alignments}
+        concatenate-alignments.py ${input_alignments} ${id}-concatenated.fasta
         """
 }
