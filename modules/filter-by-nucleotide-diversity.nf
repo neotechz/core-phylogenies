@@ -8,10 +8,10 @@ process FILTER_BY_NUCLEOTIDE_DIVERSITY {
         tuple val(id), path(input_alignments), val(start), val(end) // ${input_alignments} is a directory!
     
     output:
-        tuple val(id), path("output-alignments/")
+        tuple val(id), path("${id}-filtered-1/")
 
     script:
         """
-        # filter-by-nucleotide-diversity.py ${input_alignments} ${start} ${end}
+        filter-by-nucleotide-diversity.py ${input_alignments} ${id}-filtered-1 ${start} ${end}
         """
 }
