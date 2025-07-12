@@ -1,0 +1,53 @@
+nextflow_process {
+
+    name "Test Process FILTER_BY_DNDS_RATIO"
+    script "modules/filter-by-dnds-ratio.nf"
+    process "FILTER_BY_DNDS_RATIO"
+
+    test("Terminates with no errors") {
+
+        when {
+            params {
+                filter_by_dnds_ratio_start = 0.1
+                filter_by_dnds_ratio_end = 1.0
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-formatted", "${params.filter_by_dnds_ratio_start}", "${params.filter_by_dnds_ratio_end}"])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success }
+            )
+        }
+
+    }
+
+    test("Produces output with correct ID and MD5 checksum") {
+
+        when {
+            params {
+                filter_by_dnds_ratio_start = 0.1
+                filter_by_dnds_ratio_end = 1.0
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-formatted", "${params.filter_by_dnds_ratio_start}", "${params.filter_by_dnds_ratio_end}"])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out[0][0][0] == "prorocentrum-spp" },
+                { assert path("${process.out[0][0][1]}").exists() }
+            )
+        }
+        
+    }
+
+}
