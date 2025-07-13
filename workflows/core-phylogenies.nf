@@ -2,8 +2,8 @@
 include { PREPARE_ID                     } from '../modules/prepare-id'
 include { FORMAT_HEADERS                 } from '../modules/format-headers'
 // include { FILTER_BY_POLYMORPHIC_SITES    } from '../modules/filter-by-polymorphic-sites'
-// include { FILTER_BY_NUCLEOTIDE_DIVERSITY } from '../modules/filter-by-nucleotide-diversity'
-// include { FILTER_BY_DNDS_RATIO           } from '../modules/filter-by-dnds-ratio'
+include { FILTER_BY_NUCLEOTIDE_DIVERSITY } from '../modules/filter-by-nucleotide-diversity'
+include { FILTER_BY_DNDS_RATIO           } from '../modules/filter-by-dnds-ratio'
 include { CONCATENATE_ALIGNMENTS         } from '../modules/concatenate-alignments'
 include { CALCULATE_SUBSTITUTION_MODEL   } from '../modules/calculate-substitution-model'
 include { MAKE_PHYLOGENY                 } from '../modules/make-phylogeny'
@@ -30,7 +30,8 @@ workflow CORE_PHYLOGENIES {
         FILTER_BY_POLYMORPHIC_SITES(ch_formatted_alignments
             .combine(ch_filter_by_polymorphic_sites_cutoff))
             .set {ch_filtered_alignments_1}
-        
+        */ 
+
         Channel
             .of("${params.filter_by_nucleotide_diversity_start}")
             .set {ch_filter_by_nucleotide_diversity_start}
@@ -39,7 +40,7 @@ workflow CORE_PHYLOGENIES {
             .of("${params.filter_by_nucleotide_diversity_end}")
             .set {ch_filter_by_nucleotide_diversity_end}
         
-        FILTER_BY_NUCLEOTIDE_DIVERSITY(ch_filtered_alignments_1
+        FILTER_BY_NUCLEOTIDE_DIVERSITY(ch_formatted_alignments
             .combine(ch_filter_by_nucleotide_diversity_start)
             .combine(ch_filter_by_nucleotide_diversity_end))
             .set {ch_filtered_alignments_2}
@@ -57,9 +58,7 @@ workflow CORE_PHYLOGENIES {
             .combine(ch_filter_by_dnds_ratio_end))
             .set {ch_filtered_alignments_3}
 
-        */
-
-        CONCATENATE_ALIGNMENTS(ch_formatted_alignments)
+        CONCATENATE_ALIGNMENTS(ch_filtered_alignments_3)
             .set {ch_concatenated_alignment}
 
         CALCULATE_SUBSTITUTION_MODEL(ch_concatenated_alignment)
