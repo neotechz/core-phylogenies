@@ -8,10 +8,10 @@ process FILTER_BY_DNDS_RATIO {
         tuple val(id), path(input_alignments), val(start), val(end) // ${input_alignments} is a directory!
     
     output:
-        tuple val(id), path("output-alignments/")
+        tuple val(id), path("${id}-filtered-2/")
 
     script:
         """
-        # filter-by-dnds-ratio.py ${input_alignments} ${start} ${end}
+        filter-by-dnds-ratio.py ${input_alignments} ${id}-filtered-2 ${start} ${end}
         """
 }
