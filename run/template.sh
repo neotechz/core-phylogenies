@@ -1,6 +1,6 @@
 nextflow run main.nf \
-    --data = "data/" \
-    --filter_by_nucleotide_diversity_start = null \
-    --filter_by_nucleotide_diversity_end = null \
-    --filter_by_dnds_ratio_start = null \
-    --filter_by_dnds_ratio_end = null
+    --data "data/" \
+    --filter_by_nucleotide_diversity_start null \
+    --filter_by_nucleotide_diversity_end null \
+    --filter_by_dnds_ratio_start null \
+    --filter_by_dnds_ratio_end null
