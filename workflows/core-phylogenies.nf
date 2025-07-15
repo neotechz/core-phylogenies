@@ -26,27 +26,14 @@ workflow CORE_PHYLOGENIES {
             .set {ch_docker_raxml_ng}
 
 
-        // Script
+        // Input data
         Channel
             .fromPath("${params.data}/*", checkIfExists: true, type: "dir")
             .set {ch_input_alignments}
-        
-        PREPARE_ID(ch_input_alignments
-            .combine(ch_docker_python))
-            .set {ch_alignments_with_id}
-
-        FORMAT_HEADERS(ch_alignments_with_id
-            .combine(ch_docker_python))
-            .set {ch_formatted_alignments}
 
         Channel
             .of("${params.filter_by_polymorphic_sites_cutoff}")
             .set {ch_filter_by_polymorphic_sites_cutoff}
-
-        FILTER_BY_POLYMORPHIC_SITES(ch_formatted_alignments
-            .combine(ch_filter_by_polymorphic_sites_cutoff)
-            .combine(ch_docker_python))
-            .set {ch_filtered_alignments_1}
 
         Channel
             .of("${params.filter_by_nucleotide_diversity_start}")
@@ -55,13 +42,7 @@ workflow CORE_PHYLOGENIES {
         Channel
             .of("${params.filter_by_nucleotide_diversity_end}")
             .set {ch_filter_by_nucleotide_diversity_end}
-        
-        FILTER_BY_NUCLEOTIDE_DIVERSITY(ch_filtered_alignments_1
-            .combine(ch_filter_by_nucleotide_diversity_start)
-            .combine(ch_filter_by_nucleotide_diversity_end)
-            .combine(ch_docker_python))
-            .set {ch_filtered_alignments_2}
-        
+
         Channel
             .of("${params.filter_by_dnds_ratio_start}")
             .set {ch_filter_by_dnds_ratio_start}
@@ -69,6 +50,27 @@ workflow CORE_PHYLOGENIES {
         Channel
             .of("${params.filter_by_dnds_ratio_end}")
             .set {ch_filter_by_dnds_ratio_end}
+
+
+        // Process flow
+        PREPARE_ID(ch_input_alignments
+            .combine(ch_docker_python))
+            .set {ch_alignments_with_id}
+
+        FORMAT_HEADERS(ch_alignments_with_id
+            .combine(ch_docker_python))
+            .set {ch_formatted_alignments}
+
+        FILTER_BY_POLYMORPHIC_SITES(ch_formatted_alignments
+            .combine(ch_filter_by_polymorphic_sites_cutoff)
+            .combine(ch_docker_python))
+            .set {ch_filtered_alignments_1}
+        
+        FILTER_BY_NUCLEOTIDE_DIVERSITY(ch_filtered_alignments_1
+            .combine(ch_filter_by_nucleotide_diversity_start)
+            .combine(ch_filter_by_nucleotide_diversity_end)
+            .combine(ch_docker_python))
+            .set {ch_filtered_alignments_2}
         
         FILTER_BY_DNDS_RATIO(ch_filtered_alignments_2
             .combine(ch_filter_by_dnds_ratio_start)
