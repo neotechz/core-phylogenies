@@ -1,7 +1,7 @@
 // Default module imports
 include { PREPARE_ID                     } from '../modules/prepare-id'
 include { FORMAT_HEADERS                 } from '../modules/format-headers'
-// include { FILTER_BY_POLYMORPHIC_SITES    } from '../modules/filter-by-polymorphic-sites'
+include { FILTER_BY_POLYMORPHIC_SITES    } from '../modules/filter-by-polymorphic-sites'
 include { FILTER_BY_NUCLEOTIDE_DIVERSITY } from '../modules/filter-by-nucleotide-diversity'
 include { FILTER_BY_DNDS_RATIO           } from '../modules/filter-by-dnds-ratio'
 include { CONCATENATE_ALIGNMENTS         } from '../modules/concatenate-alignments'
@@ -22,7 +22,6 @@ workflow CORE_PHYLOGENIES {
         FORMAT_HEADERS(ch_alignments_with_id)
             .set {ch_formatted_alignments}
 
-        /*
         Channel
             .of("${params.filter_by_polymorphic_sites_cutoff}")
             .set {ch_filter_by_polymorphic_sites_cutoff}
@@ -30,7 +29,6 @@ workflow CORE_PHYLOGENIES {
         FILTER_BY_POLYMORPHIC_SITES(ch_formatted_alignments
             .combine(ch_filter_by_polymorphic_sites_cutoff))
             .set {ch_filtered_alignments_1}
-        */ 
 
         Channel
             .of("${params.filter_by_nucleotide_diversity_start}")
@@ -40,7 +38,7 @@ workflow CORE_PHYLOGENIES {
             .of("${params.filter_by_nucleotide_diversity_end}")
             .set {ch_filter_by_nucleotide_diversity_end}
         
-        FILTER_BY_NUCLEOTIDE_DIVERSITY(ch_formatted_alignments
+        FILTER_BY_NUCLEOTIDE_DIVERSITY(ch_filtered_alignments_1
             .combine(ch_filter_by_nucleotide_diversity_start)
             .combine(ch_filter_by_nucleotide_diversity_end))
             .set {ch_filtered_alignments_2}
