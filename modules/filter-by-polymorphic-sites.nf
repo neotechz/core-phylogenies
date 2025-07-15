@@ -1,4 +1,5 @@
 process FILTER_BY_POLYMORPHIC_SITES {
+    tag "${id}"
     cpus "${params.filter_by_polymorphic_sites_cpus}"
     memory "${params.filter_by_polymorphic_sites_memory} GB"
     container "${params.docker_python}"

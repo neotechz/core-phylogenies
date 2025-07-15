@@ -1,4 +1,5 @@
 process MAKE_PHYLOGENY {
+    tag "${id}"
     cpus "${params.make_phylogeny_cpus}"
     memory "${params.make_phylogeny_memory} GB"
     container "${params.docker_raxml_ng}"

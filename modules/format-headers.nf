@@ -1,4 +1,5 @@
 process FORMAT_HEADERS {
+    tag "${id}"
     cpus "${params.format_headers_cpus}"
     memory "${params.format_headers_memory} GB"
     container "${params.docker_python}"
