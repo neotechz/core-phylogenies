@@ -2,12 +2,12 @@ process MAKE_PHYLOGENY {
     tag "${id}"
     cpus "${params.make_phylogeny_cpus}"
     memory "${params.make_phylogeny_memory} GB"
-    container "${params.docker_raxml_ng}"
     publishDir "${params.results}/make-phylogeny", mode: "copy"
+    container "${container}"
     cache "deep"
 
     input:
-        tuple val(id), path(alignment), path(substitution_model)
+        tuple val(id), path(alignment), path(substitution_model), val(container)
     
     output:
         tuple val(id), path("${id}.raxml.support.tre")

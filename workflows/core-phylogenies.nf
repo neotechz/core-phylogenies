@@ -12,14 +12,31 @@ include { MAKE_PHYLOGENY                 } from '../modules/make-phylogeny'
 // Pipeline workflow
 workflow CORE_PHYLOGENIES {
     main:
+        // Container paths
+        Channel
+            .of("${params.docker_python}")
+            .set {ch_docker_python}
+
+        Channel
+            .of("${params.docker_modeltest_ng}")
+            .set {ch_docker_modeltest_ng}
+
+        Channel
+            .of("${params.docker_raxml_ng}")
+            .set {ch_docker_raxml_ng}
+
+
+        // Script
         Channel
             .fromPath("${params.data}/*", checkIfExists: true, type: "dir")
             .set {ch_input_alignments}
         
-        PREPARE_ID(ch_input_alignments)
+        PREPARE_ID(ch_input_alignments
+            .combine(ch_docker_python))
             .set {ch_alignments_with_id}
 
-        FORMAT_HEADERS(ch_alignments_with_id)
+        FORMAT_HEADERS(ch_alignments_with_id
+            .combine(ch_docker_python))
             .set {ch_formatted_alignments}
 
         Channel
@@ -27,7 +44,8 @@ workflow CORE_PHYLOGENIES {
             .set {ch_filter_by_polymorphic_sites_cutoff}
 
         FILTER_BY_POLYMORPHIC_SITES(ch_formatted_alignments
-            .combine(ch_filter_by_polymorphic_sites_cutoff))
+            .combine(ch_filter_by_polymorphic_sites_cutoff)
+            .combine(ch_docker_python))
             .set {ch_filtered_alignments_1}
 
         Channel
@@ -40,7 +58,8 @@ workflow CORE_PHYLOGENIES {
         
         FILTER_BY_NUCLEOTIDE_DIVERSITY(ch_filtered_alignments_1
             .combine(ch_filter_by_nucleotide_diversity_start)
-            .combine(ch_filter_by_nucleotide_diversity_end))
+            .combine(ch_filter_by_nucleotide_diversity_end)
+            .combine(ch_docker_python))
             .set {ch_filtered_alignments_2}
         
         Channel
@@ -53,16 +72,20 @@ workflow CORE_PHYLOGENIES {
         
         FILTER_BY_DNDS_RATIO(ch_filtered_alignments_2
             .combine(ch_filter_by_dnds_ratio_start)
-            .combine(ch_filter_by_dnds_ratio_end))
+            .combine(ch_filter_by_dnds_ratio_end)
+            .combine(ch_docker_python))
             .set {ch_filtered_alignments_3}
 
-        CONCATENATE_ALIGNMENTS(ch_filtered_alignments_3)
+        CONCATENATE_ALIGNMENTS(ch_filtered_alignments_3
+            .combine(ch_docker_python))
             .set {ch_concatenated_alignment}
 
-        CALCULATE_SUBSTITUTION_MODEL(ch_concatenated_alignment)
+        CALCULATE_SUBSTITUTION_MODEL(ch_concatenated_alignment
+            .combine(ch_docker_modeltest_ng))
             .set {ch_substitution_model}
 
         MAKE_PHYLOGENY(ch_concatenated_alignment
-            .join(ch_substitution_model))
+            .join(ch_substitution_model)
+            .combine(ch_docker_raxml_ng))
             .set {ch_phylogeny}
 }
