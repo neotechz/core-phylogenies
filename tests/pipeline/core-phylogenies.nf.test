@@ -9,6 +9,9 @@ nextflow_pipeline {
             params {
                 data = "${projectDir}/tests/data/prorocentrum-spp-pipeline"
 
+                // FILTER_BY_POLYMORPHIC_SITES
+                filter_by_polymorphic_sites_cutoff 0.05
+
                 // FILTER_BY_NUCLEOTIDE_DIVERSITY
                 filter_by_nucleotide_diversity_start = 0.1
                 filter_by_nucleotide_diversity_end = 0.8
@@ -22,9 +25,9 @@ nextflow_pipeline {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert workflow.trace.succeeded().size() == 14 },
+                { assert workflow.trace.succeeded().size() == 16 },
                 { assert workflow.trace.failed().size() == 0 }, 
-                { assert workflow.trace.tasks().size() == 14 }
+                { assert workflow.trace.tasks().size() == 16 }
             )
         }
         
