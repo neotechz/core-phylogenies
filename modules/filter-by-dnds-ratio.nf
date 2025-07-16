@@ -1,4 +1,5 @@
 process FILTER_BY_DNDS_RATIO {
+    tag "${id}"
     cpus "${params.filter_by_dnds_ratio_cpus}"
     memory "${params.filter_by_dnds_ratio_memory} GB"
     publishDir "${params.results}/filter-by-dnds-ratio", mode: "copy"

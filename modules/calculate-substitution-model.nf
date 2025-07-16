@@ -1,4 +1,5 @@
 process CALCULATE_SUBSTITUTION_MODEL {
+    tag "${id}"
     cpus "${params.calculate_substitution_model_cpus}"
     memory "${params.calculate_substitution_model_memory} GB"
     publishDir "${params.results}/calculate-substitution-model", mode: "copy"

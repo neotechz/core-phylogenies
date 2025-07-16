@@ -1,4 +1,5 @@
 process MAKE_PHYLOGENY {
+    tag "${id}"
     cpus "${params.make_phylogeny_cpus}"
     memory "${params.make_phylogeny_memory} GB"
     publishDir "${params.results}/make-phylogeny", mode: "copy"

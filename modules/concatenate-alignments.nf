@@ -1,4 +1,5 @@
 process CONCATENATE_ALIGNMENTS {
+    tag "${id}"
     cpus "${params.concatenate_alignments_cpus}"
     memory "${params.concatenate_alignments_memory} GB"
     publishDir "${params.results}/concatenate-alignments", mode: "copy"

@@ -1,4 +1,5 @@
 process FILTER_BY_NUCLEOTIDE_DIVERSITY {
+    tag "${id}"
     cpus "${params.filter_by_nucleotide_diversity_cpus}"
     memory "${params.filter_by_nucleotide_diversity_memory} GB"
     publishDir "${params.results}/filter-by-nucleotide-diversity", mode: "copy"
