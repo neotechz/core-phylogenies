@@ -1,0 +1,51 @@
+nextflow_process {
+
+    name "Test Process MEASURE_RF_DISTANCE"
+    script "modules/measure-rf-distance.nf"
+    process "MEASURE_RF_DISTANCE"
+
+    test("Terminates with no errors") {
+
+        when {
+            params {
+                
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/18s-only.raxml.support.tre", "${projectDir}/tests/data/28s-only.raxml.support.tre"])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success }
+            )
+        }
+
+    }
+
+    test("Produces output with correct ID and MD5 checksum") {
+
+        when {
+            params {
+
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/18s-only.raxml.support.tre", "${projectDir}/tests/data/28s-only.raxml.support.tre"])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out[0][0][0] == "prorocentrum-spp" },
+                { assert new File(process.out[0][0][1]).exists()} // the RF distance text file
+            )
+        }
+        
+    }
+
+}
