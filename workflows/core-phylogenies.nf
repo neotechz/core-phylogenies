@@ -26,6 +26,32 @@ workflow CORE_PHYLOGENIES {
             .set {ch_docker_raxml_ng}
 
 
+        // Error handling for input params
+        if (!params.data) {
+            error "ERROR: Input directory of gene alignments not specified (--data)"
+        }
+
+        if (!params.filter_by_polymorphic_sites_cutoff) {
+            error "ERROR: Cutoff for filtering by polymorphic sites not specified (--filter_by_polymorphic_sites_cutoff)"
+        }
+
+        if (!params.filter_by_nucleotide_diversity_start) {
+            error "ERROR: Start of range for filtering by nucleotide diversity not specified (--filter_by_nucleotide_diversity_start)"
+        }
+
+        if (!params.filter_by_nucleotide_diversity_end) {
+            error "ERROR: End of range for filtering by nucleotide diversity not specified (--filter_by_nucleotide_diversity_end)"
+        }
+
+        if (!params.filter_by_dnds_ratio_start) {
+            error "ERROR: Start of range for filtering by dN/dS ratio not specified (--filter_by_dnds_ratio_start)"
+        }
+
+        if (!params.filter_by_dnds_ratio_end) {
+            error "ERROR: End of range for filtering by dN/dS ratio not specified (--filter_by_dnds_ratio_end)"
+        }
+
+
         // Input data
         Channel
             .fromPath("${params.data}/*", checkIfExists: true, type: "dir")
