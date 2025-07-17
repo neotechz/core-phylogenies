@@ -159,7 +159,7 @@ nextflow_pipeline {
 
     }
 
-    test("Terminates properly when given complete input") { 
+    test("Terminates properly when given complete input on 'local' profile") { 
 
         when {
             params {
@@ -175,6 +175,8 @@ nextflow_pipeline {
                 // FILTER_BY_DNDS_RATIO
                 filter_by_dnds_ratio_start = 0.1
                 filter_by_dnds_ratio_end = 1.0
+
+                profile = "local"
             }
         }
 
