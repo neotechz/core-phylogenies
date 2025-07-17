@@ -3,6 +3,7 @@ nextflow_process {
     name "Test Process FORMAT_HEADERS"
     script "modules/format-headers.nf"
     process "FORMAT_HEADERS"
+    profile "local"
 
     test("Terminates with no errors") {
 
@@ -12,7 +13,10 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-raw"])
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "${projectDir}/tests/data/prorocentrum-spp-raw",
+                    "\${params.docker_python}",
+                    null])
                 """
             }
         }
@@ -33,7 +37,10 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-raw"])
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "${projectDir}/tests/data/prorocentrum-spp-raw",
+                    "\${params.docker_python}",
+                    null])
                 """
             }
         }

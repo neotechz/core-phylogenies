@@ -3,6 +3,7 @@ nextflow_process {
     name "Test Process FILTER_BY_POLYMORPHIC_SITES"
     script "modules/filter-by-polymorphic-sites.nf"
     process "FILTER_BY_POLYMORPHIC_SITES"
+    profile "local"
 
     test("Terminates with no errors") {
 
@@ -12,7 +13,11 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-formatted", "${params.filter_by_polymorphic_sites_cutoff}"])
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "${projectDir}/tests/data/prorocentrum-spp-formatted",
+                    "${params.filter_by_polymorphic_sites_cutoff}",
+                    "\${params.docker_python}",
+                    null])
                 """
             }
         }
@@ -33,7 +38,11 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-formatted", "${params.filter_by_polymorphic_sites_cutoff}"])
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "${projectDir}/tests/data/prorocentrum-spp-formatted",
+                    "${params.filter_by_polymorphic_sites_cutoff}",
+                    "\${params.docker_python}",
+                    null])
                 """
             }
         }

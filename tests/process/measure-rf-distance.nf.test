@@ -3,6 +3,7 @@ nextflow_process {
     name "Test Process MEASURE_RF_DISTANCE"
     script "modules/measure-rf-distance.nf"
     process "MEASURE_RF_DISTANCE"
+    profile "local"
 
     test("Terminates with no errors") {
 
@@ -12,7 +13,11 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/18s-only.raxml.support.tre", "${projectDir}/tests/data/28s-only.raxml.support.tre"])
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "${projectDir}/tests/data/18s-only.raxml.support.tre",
+                    "${projectDir}/tests/data/28s-only.raxml.support.tre",
+                    "\${params.docker_python}",
+                    null])
                 """
             }
         }
@@ -33,7 +38,11 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/18s-only.raxml.support.tre", "${projectDir}/tests/data/28s-only.raxml.support.tre"])
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "${projectDir}/tests/data/18s-only.raxml.support.tre",
+                    "${projectDir}/tests/data/28s-only.raxml.support.tre",
+                    "\${params.docker_python}",
+                    null])
                 """
             }
         }

@@ -3,6 +3,7 @@ nextflow_process {
     name "Test Process MAKE_PHYLOGENY"
     script "modules/make-phylogeny.nf"
     process "MAKE_PHYLOGENY"
+    profile "local"
 
     test("Terminates with no errors") {
 
@@ -12,7 +13,11 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta", "${projectDir}/tests/data/prorocentrum-spp-substitution-model.out"])
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta",
+                    "${projectDir}/tests/data/prorocentrum-spp-substitution-model.out",
+                    "\${params.docker_raxml_ng}",
+                    null])
                 """
             }
         }
@@ -33,7 +38,11 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta", "${projectDir}/tests/data/prorocentrum-spp-substitution-model.out"])
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta",
+                    "${projectDir}/tests/data/prorocentrum-spp-substitution-model.out",
+                    "\${params.docker_raxml_ng}",
+                    null])
                 """
             }
         }

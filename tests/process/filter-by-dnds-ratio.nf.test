@@ -3,6 +3,7 @@ nextflow_process {
     name "Test Process FILTER_BY_DNDS_RATIO"
     script "modules/filter-by-dnds-ratio.nf"
     process "FILTER_BY_DNDS_RATIO"
+    profile "local"
 
     test("Terminates with no errors") {
 
@@ -13,7 +14,12 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-formatted", "${params.filter_by_dnds_ratio_start}", "${params.filter_by_dnds_ratio_end}"])
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "${projectDir}/tests/data/prorocentrum-spp-formatted",
+                    "${params.filter_by_dnds_ratio_start}",
+                    "${params.filter_by_dnds_ratio_end}",
+                    "\${params.docker_python}",
+                    null])
                 """
             }
         }
@@ -35,7 +41,12 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-formatted", "${params.filter_by_dnds_ratio_start}", "${params.filter_by_dnds_ratio_end}"])
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "${projectDir}/tests/data/prorocentrum-spp-formatted",
+                    "${params.filter_by_dnds_ratio_start}",
+                    "${params.filter_by_dnds_ratio_end}",
+                    "\${params.docker_python}",
+                    null])
                 """
             }
         }

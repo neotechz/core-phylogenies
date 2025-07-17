@@ -3,16 +3,20 @@ nextflow_process {
     name "Test Process CALCULATE_SUBSTITUTION_MODEL"
     script "modules/calculate-substitution-model.nf"
     process "CALCULATE_SUBSTITUTION_MODEL"
+    profile "local"
 
     test("Terminates with no errors") {
 
         when {
             params {
-                
+
             }
             process {
                 """
-                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta"])
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta",
+                    "\${params.docker_modeltest_ng}",
+                    null])
                 """
             }
         }
@@ -31,9 +35,12 @@ nextflow_process {
             params {
 
             }
-            process {
+            process {  
                 """
-                input[0] = Channel.of(["prorocentrum-spp", "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta"])
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta",
+                    "\${params.docker_modeltest_ng}",
+                    null])
                 """
             }
         }
