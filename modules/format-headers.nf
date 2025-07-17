@@ -4,9 +4,10 @@ process FORMAT_HEADERS {
     memory "${params.format_headers_memory} GB"
     publishDir "${params.results}/format-headers", mode: "copy"
     container "${container}"
+    clusterOptions "${cluster_options}"
 
     input:
-        tuple val(id), path(input_alignments), val(container) // ${input_alignments} is a directory!
+        tuple val(id), path(input_alignments), val(container), val(cluster_options) // ${input_alignments} is a directory!
     
     output:
         tuple val(id), path("formatted-alignments/")

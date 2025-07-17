@@ -4,10 +4,11 @@ process MAKE_PHYLOGENY {
     memory "${params.make_phylogeny_memory} GB"
     publishDir "${params.results}/make-phylogeny", mode: "copy"
     container "${container}"
+    clusterOptions "${cluster_options}"
     cache "deep"
 
     input:
-        tuple val(id), path(alignment), path(substitution_model), val(container)
+        tuple val(id), path(alignment), path(substitution_model), val(container), val(cluster_options)
     
     output:
         tuple val(id), path("${id}.raxml.support.tre")

@@ -4,9 +4,10 @@ process FILTER_BY_NUCLEOTIDE_DIVERSITY {
     memory "${params.filter_by_nucleotide_diversity_memory} GB"
     publishDir "${params.results}/filter-by-nucleotide-diversity", mode: "copy"
     container "${container}"
+    clusterOptions "${cluster_options}"
 
     input:
-        tuple val(id), path(input_alignments), val(start), val(end), val(container) // ${input_alignments} is a directory!
+        tuple val(id), path(input_alignments), val(start), val(end), val(container), val(cluster_options) // ${input_alignments} is a directory!
     
     output:
         tuple val(id), path("${id}-filtered-2/")
