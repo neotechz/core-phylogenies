@@ -16,7 +16,7 @@ nextflow_process {
                 input[0] = Channel.of(["prorocentrum-spp",
                     "${projectDir}/tests/data/prorocentrum-spp-formatted",
                     "${params.filter_by_polymorphic_sites_cutoff}",
-                    "\${params.container_python}",
+                    "\${params.container_base}",
                     null])
                 """
             }
@@ -41,7 +41,7 @@ nextflow_process {
                 input[0] = Channel.of(["prorocentrum-spp",
                     "${projectDir}/tests/data/prorocentrum-spp-formatted",
                     "${params.filter_by_polymorphic_sites_cutoff}",
-                    "\${params.container_python}",
+                    "\${params.container_base}",
                     null])
                 """
             }

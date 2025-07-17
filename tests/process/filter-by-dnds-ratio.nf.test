@@ -18,7 +18,7 @@ nextflow_process {
                     "${projectDir}/tests/data/prorocentrum-spp-formatted",
                     "${params.filter_by_dnds_ratio_start}",
                     "${params.filter_by_dnds_ratio_end}",
-                    "\${params.container_python}",
+                    "\${params.container_base}",
                     null])
                 """
             }
@@ -45,7 +45,7 @@ nextflow_process {
                     "${projectDir}/tests/data/prorocentrum-spp-formatted",
                     "${params.filter_by_dnds_ratio_start}",
                     "${params.filter_by_dnds_ratio_end}",
-                    "\${params.container_python}",
+                    "\${params.container_base}",
                     null])
                 """
             }

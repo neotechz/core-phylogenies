@@ -32,8 +32,8 @@ workflow CORE_PHYLOGENIES {
 
         // Container paths
         Channel
-            .of("${resolveContainerPath(params.container_python)}")
-            .set {ch_container_python}
+            .of("${resolveContainerPath(params.container_base)}")
+            .set {ch_container_base}
 
         Channel
             .of("${resolveContainerPath(params.container_modeltest_ng)}")
@@ -98,37 +98,37 @@ workflow CORE_PHYLOGENIES {
 
         // Process flow
         PREPARE_ID(ch_input_alignments
-            .combine(ch_container_python)
+            .combine(ch_container_base)
             .combine(ch_cluster_options))
             .set {ch_alignments_with_id}
 
         FORMAT_HEADERS(ch_alignments_with_id
-            .combine(ch_container_python)
+            .combine(ch_container_base)
             .combine(ch_cluster_options))
             .set {ch_formatted_alignments}
 
         FILTER_BY_POLYMORPHIC_SITES(ch_formatted_alignments
             .combine(ch_filter_by_polymorphic_sites_cutoff)
-            .combine(ch_container_python)
+            .combine(ch_container_base)
             .combine(ch_cluster_options))
             .set {ch_filtered_alignments_1}
         
         FILTER_BY_NUCLEOTIDE_DIVERSITY(ch_filtered_alignments_1
             .combine(ch_filter_by_nucleotide_diversity_start)
             .combine(ch_filter_by_nucleotide_diversity_end)
-            .combine(ch_container_python)
+            .combine(ch_container_base)
             .combine(ch_cluster_options))
             .set {ch_filtered_alignments_2}
         
         FILTER_BY_DNDS_RATIO(ch_filtered_alignments_2
             .combine(ch_filter_by_dnds_ratio_start)
             .combine(ch_filter_by_dnds_ratio_end)
-            .combine(ch_container_python)
+            .combine(ch_container_base)
             .combine(ch_cluster_options))
             .set {ch_filtered_alignments_3}
 
         CONCATENATE_ALIGNMENTS(ch_filtered_alignments_3
-            .combine(ch_container_python)
+            .combine(ch_container_base)
             .combine(ch_cluster_options))
             .set {ch_concatenated_alignment}
 
