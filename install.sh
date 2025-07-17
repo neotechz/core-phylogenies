@@ -1,5 +1,6 @@
 docker build --file assets/core-phylogenies.Dockerfile --tag neotechz/core-phylogenies:1.0 .
-docker pull fmalmeida/keggdecoder@sha256:72862a7dfec262dcf4716b7d6b65110aad6b77ae86bffccb5c8ecc86ce432ae6
+docker pull quay.io/biocontainers/modeltest-ng:0.1.7--hf316886_3
+docker pull quay.io/biocontainers/raxml-ng:0.9.0--h192cbe9_1
 
 mkdir -p data
 mkdir -p results
