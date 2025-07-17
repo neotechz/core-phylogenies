@@ -18,7 +18,7 @@ nextflow_process {
                     "${projectDir}/tests/data/prorocentrum-spp-formatted",
                     "${params.filter_by_nucleotide_diversity_start}",
                     "${params.filter_by_nucleotide_diversity_end}",
-                    "\${params.docker_python}",
+                    "\${params.container_python}",
                     null])
                 """
             }
@@ -45,7 +45,7 @@ nextflow_process {
                     "${projectDir}/tests/data/prorocentrum-spp-formatted",
                     "${params.filter_by_nucleotide_diversity_start}",
                     "${params.filter_by_nucleotide_diversity_end}",
-                    "\${params.docker_python}",
+                    "\${params.container_python}",
                     null])
                 """
             }

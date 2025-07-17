@@ -16,7 +16,7 @@ nextflow_process {
                 input[0] = Channel.of(["prorocentrum-spp",
                     "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta",
                     "${projectDir}/tests/data/prorocentrum-spp-substitution-model.out",
-                    "\${params.docker_raxml_ng}",
+                    "\${params.container_raxml_ng}",
                     null])
                 """
             }
@@ -41,7 +41,7 @@ nextflow_process {
                 input[0] = Channel.of(["prorocentrum-spp",
                     "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta",
                     "${projectDir}/tests/data/prorocentrum-spp-substitution-model.out",
-                    "\${params.docker_raxml_ng}",
+                    "\${params.container_raxml_ng}",
                     null])
                 """
             }

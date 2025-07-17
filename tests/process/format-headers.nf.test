@@ -15,7 +15,7 @@ nextflow_process {
                 """
                 input[0] = Channel.of(["prorocentrum-spp",
                     "${projectDir}/tests/data/prorocentrum-spp-raw",
-                    "\${params.docker_python}",
+                    "\${params.container_python}",
                     null])
                 """
             }
@@ -39,7 +39,7 @@ nextflow_process {
                 """
                 input[0] = Channel.of(["prorocentrum-spp",
                     "${projectDir}/tests/data/prorocentrum-spp-raw",
-                    "\${params.docker_python}",
+                    "\${params.container_python}",
                     null])
                 """
             }

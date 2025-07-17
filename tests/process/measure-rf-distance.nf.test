@@ -16,7 +16,7 @@ nextflow_process {
                 input[0] = Channel.of(["prorocentrum-spp",
                     "${projectDir}/tests/data/18s-only.raxml.support.tre",
                     "${projectDir}/tests/data/28s-only.raxml.support.tre",
-                    "\${params.docker_python}",
+                    "\${params.container_python}",
                     null])
                 """
             }
@@ -41,7 +41,7 @@ nextflow_process {
                 input[0] = Channel.of(["prorocentrum-spp",
                     "${projectDir}/tests/data/18s-only.raxml.support.tre",
                     "${projectDir}/tests/data/28s-only.raxml.support.tre",
-                    "\${params.docker_python}",
+                    "\${params.container_python}",
                     null])
                 """
             }
