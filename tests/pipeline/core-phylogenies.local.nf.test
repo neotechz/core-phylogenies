@@ -1,7 +1,8 @@
 nextflow_pipeline {
 
-    name "Test Workflow CORE_PHYLOGENIES"
+    name "Test Workflow CORE_PHYLOGENIES on 'local'"
     script "main.nf"
+    profile "local"
 
     test("Produces error when missing input data") {
         when {
@@ -157,7 +158,7 @@ nextflow_pipeline {
             )
         }
 
-    }
+    }    
 
     test("Terminates properly when given complete input") { 
 

@@ -4,9 +4,10 @@ process CALCULATE_SUBSTITUTION_MODEL {
     memory "${params.calculate_substitution_model_memory} GB"
     publishDir "${params.results}/calculate-substitution-model", mode: "copy"
     container "${container}"
+    clusterOptions "${cluster_options}"
 
     input:
-        tuple val(id), path(alignment), val(container)
+        tuple val(id), path(alignment), val(container), val(cluster_options)
     
     output:
         tuple val(id), path("${id}-substitution-model.out")
