@@ -26,6 +26,7 @@ process MAKE_PHYLOGENY {
             --bs-metric tbe \
             --tree rand{1} \
             --bs-trees 1000 \
+            --threads ${task.cpus} \
             --force perf_threads
 
         mv ${id}.raxml.support ${id}.raxml.support.tre
