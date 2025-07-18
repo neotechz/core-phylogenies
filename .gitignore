@@ -8,3 +8,5 @@ results/
 .virtual_documents/
 playground/
 .idea
+slurm-logs/
+tmp/

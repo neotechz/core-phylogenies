@@ -5,3 +5,5 @@ docker pull quay.io/biocontainers/raxml-ng:0.9.0--h192cbe9_1
 mkdir -p data
 mkdir -p results
 mkdir -p logs
+mkdir -p slurm-logs
+mkdir -p tmp
