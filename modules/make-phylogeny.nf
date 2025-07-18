@@ -2,6 +2,7 @@ process MAKE_PHYLOGENY {
     tag "${id}"
     cpus "${params.make_phylogeny_cpus}"
     memory "${params.make_phylogeny_memory} GB"
+    maxForks params.make_phylogeny_max_forks.toInteger()
     publishDir "${params.results}/make-phylogeny", mode: "copy"
     container "${container}"
     clusterOptions "${cluster_options}"
