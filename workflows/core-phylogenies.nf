@@ -11,6 +11,7 @@ include { FILTER_BY_DNDS_RATIO           } from '../modules/filter-by-dnds-ratio
 include { CONCATENATE_ALIGNMENTS         } from '../modules/concatenate-alignments'
 include { CALCULATE_SUBSTITUTION_MODEL   } from '../modules/calculate-substitution-model'
 include { MAKE_PHYLOGENY                 } from '../modules/make-phylogeny'
+include { MEASURE_RF_DISTANCE            } from '../modules/measure-rf-distance'
 
 
 // Pipeline workflow
@@ -46,7 +47,7 @@ workflow CORE_PHYLOGENIES {
 
         // Error handling for input params
         if (!params.data) {
-            error "ERROR: Input directory of gene alignments not specified (--data)"
+            error "ERROR: Input directory of gene alignments and reference tree not specified (--data)"
         }
 
         if (!params.filter_by_polymorphic_sites_cutoff) {
@@ -74,6 +75,10 @@ workflow CORE_PHYLOGENIES {
         Channel
             .fromPath("${params.data}/*", checkIfExists: true, type: "dir")
             .set {ch_input_alignments}
+
+        Channel
+            .fromPath("${params.data}/*.tre", checkIfExists: true, type: "file")
+            .set {ch_reference_phylogeny}
 
         Channel
             .of("${params.filter_by_polymorphic_sites_cutoff}")
@@ -142,4 +147,10 @@ workflow CORE_PHYLOGENIES {
             .combine(ch_container_raxml_ng)
             .combine(ch_cluster_options))
             .set {ch_phylogeny}
+        
+        MEASURE_RF_DISTANCE(ch_phylogeny
+            .combine(ch_reference_phylogeny)
+            .combine(ch_container_base)
+            .combine(ch_cluster_options))
+            .set {ch_rf_distance}
 }
