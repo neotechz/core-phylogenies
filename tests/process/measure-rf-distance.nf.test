@@ -14,8 +14,8 @@ nextflow_process {
             process {
                 """
                 input[0] = Channel.of(["prorocentrum-spp",
-                    "${projectDir}/tests/data/18s-only.raxml.support.tre",
-                    "${projectDir}/tests/data/28s-only.raxml.support.tre",
+                    "${projectDir}/tests/data/prorocentrum-spp-trees/18s-only.raxml.support.tre",
+                    "${projectDir}/tests/data/prorocentrum-spp-trees/28s-only.raxml.support.tre",
                     "\${params.container_base}",
                     null])
                 """
@@ -39,8 +39,8 @@ nextflow_process {
             process {
                 """
                 input[0] = Channel.of(["prorocentrum-spp",
-                    "${projectDir}/tests/data/18s-only.raxml.support.tre",
-                    "${projectDir}/tests/data/28s-only.raxml.support.tre",
+                    "${projectDir}/tests/data/prorocentrum-spp-trees/18s-only.raxml.support.tre",
+                    "${projectDir}/tests/data/prorocentrum-spp-trees/28s-only.raxml.support.tre",
                     "\${params.container_base}",
                     null])
                 """
