@@ -1,0 +1,59 @@
+nextflow_process {
+
+    name "Test Process MEASURE_AVERAGE_SUPPORT"
+    script "modules/measure-average-support.nf"
+    process "MEASURE_AVERAGE_SUPPORT"
+    profile "local"
+
+    test("Terminates with no errors") {
+
+        when {
+            params {
+                
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "${projectDir}/tests/data/prorocentrum-spp-trees/18s-only.raxml.support.tre",
+                    "\${params.container_base}",
+                    null])
+                """
+                // 18s only
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success }
+            )
+        }
+
+    }
+
+    test("Produces output with correct ID and MD5 checksum") {
+
+        when {
+            params {
+
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "${projectDir}/tests/data/prorocentrum-spp-trees/18s-only.raxml.support.tre",
+                    "\${params.container_base}",
+                    null])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out[0][0][0] == "prorocentrum-spp" },
+                { assert new File(process.out[0][0][1]).exists()} // the average boostrap support value as a textfile
+            )
+        }
+        
+    }
+
+}
