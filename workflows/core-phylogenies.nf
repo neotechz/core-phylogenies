@@ -12,6 +12,7 @@ include { CONCATENATE_ALIGNMENTS         } from '../modules/concatenate-alignmen
 include { CALCULATE_SUBSTITUTION_MODEL   } from '../modules/calculate-substitution-model'
 include { MAKE_PHYLOGENY                 } from '../modules/make-phylogeny'
 include { MEASURE_RF_DISTANCE            } from '../modules/measure-rf-distance'
+include { MEASURE_AVERAGE_SUPPORT        } from '../modules/measure-average-support'
 
 
 // Pipeline workflow
@@ -153,4 +154,9 @@ workflow CORE_PHYLOGENIES {
             .combine(ch_container_base)
             .combine(ch_cluster_options))
             .set {ch_rf_distance}
+
+        MEASURE_AVERAGE_SUPPORT(ch_phylogeny
+            .combine(ch_container_base)
+            .combine(ch_cluster_options))
+            .set {ch_average_support}
 }
