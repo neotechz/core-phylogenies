@@ -5,31 +5,7 @@ nextflow_process {
     process "CONCATENATE_ALIGNMENTS"
     profile "local"
 
-    test("Terminates with no errors") {
-
-        when {
-            params {
-                
-            }
-            process {
-                """
-                input[0] = Channel.of(["prorocentrum-spp",
-                    "${projectDir}/tests/data/prorocentrum-spp-formatted",
-                    "\${params.container_base}",
-                    null])
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert process.success }
-            )
-        }
-
-    }
-
-    test("Produces output with correct ID and MD5 checksum") {
+    test("Takes in paths as string and returns one concatenated alignment") {
 
         when {
             params {
@@ -38,7 +14,7 @@ nextflow_process {
             process {
                 """
                 input[0] = Channel.of(["prorocentrum-spp",
-                    "${projectDir}/tests/data/prorocentrum-spp-formatted",
+                    "${projectDir}/tests/data/prorocentrum-spp-formatted/18S.fasta ${projectDir}/tests/data/prorocentrum-spp-formatted/28S.fasta",
                     "\${params.container_base}",
                     null])
                 """
