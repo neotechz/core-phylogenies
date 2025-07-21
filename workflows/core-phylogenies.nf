@@ -48,7 +48,11 @@ workflow CORE_PHYLOGENIES {
 
         // Error handling for input params
         if (!params.data) {
-            error "ERROR: Input directory of gene alignments and reference tree not specified (--data)"
+            error "ERROR: Input directory not specified (--data)"
+        }
+
+        if (!params.filter_only && !params.data_reference) {
+            error "ERROR: Reference tree for RF distance measurement not specified (--data_reference)"
         }
 
         if (!params.filter_by_polymorphic_sites_cutoff) {
@@ -79,7 +83,11 @@ workflow CORE_PHYLOGENIES {
 
         Channel
             .fromPath("${params.data}/*.tre", checkIfExists: true, type: "file")
-            .set {ch_reference_phylogeny}
+            .branch { tree ->
+                reference: tree.endsWith("${params.data_reference}")
+                queries: true
+            } // Separate reference tree from query trees, if applicable
+            .set {ch_phylogenies}
 
         Channel
             .of("${params.filter_by_polymorphic_sites_cutoff}")
@@ -152,7 +160,7 @@ workflow CORE_PHYLOGENIES {
                 .set {ch_phylogeny}
             
             MEASURE_RF_DISTANCE(ch_phylogeny
-                .combine(ch_reference_phylogeny)
+                .combine(ch_phylogenies.reference)
                 .combine(ch_container_base)
                 .combine(ch_cluster_options))
                 .set {ch_rf_distance}
