@@ -7,13 +7,13 @@ process FORMAT_HEADERS {
     clusterOptions "${cluster_options}"
 
     input:
-        tuple val(id), path(input_alignments), val(container), val(cluster_options) // ${input_alignments} is a directory!
+        tuple val(id), path(input_alignment), val(container), val(cluster_options) // ${input_alignments} is a directory!
     
     output:
-        tuple val(id), path("formatted-alignments/")
+        tuple val(id), path("formatted-alignments/*")
 
     script:
         """
-        format-headers.py ${input_alignments}
+        format-headers.py ${input_alignment}
         """
 }
