@@ -84,7 +84,7 @@ workflow CORE_PHYLOGENIES {
 
         // Input data
         Channel
-            .fromPath("${params.data}/*", checkIfExists: true, type: "dir")
+            .fromPath("${params.data}/*.fa*", checkIfExists: true, type: "file")
             .set {ch_input_alignments}
 
         Channel
@@ -134,6 +134,7 @@ workflow CORE_PHYLOGENIES {
                 .combine(ch_filter_by_polymorphic_sites_cutoff)
                 .combine(ch_container_base)
                 .combine(ch_cluster_options))
+                .filter( ~/\/(.)+/ ) // Only those with valid paths are retained
                 .set {ch_filtered_alignments_1}
             
             FILTER_BY_NUCLEOTIDE_DIVERSITY(ch_filtered_alignments_1
@@ -141,6 +142,7 @@ workflow CORE_PHYLOGENIES {
                 .combine(ch_filter_by_nucleotide_diversity_end)
                 .combine(ch_container_base)
                 .combine(ch_cluster_options))
+                .filter( ~/\/(.)+/ ) // ^^
                 .set {ch_filtered_alignments_2}
             
             FILTER_BY_DNDS_RATIO(ch_filtered_alignments_2
@@ -148,9 +150,11 @@ workflow CORE_PHYLOGENIES {
                 .combine(ch_filter_by_dnds_ratio_end)
                 .combine(ch_container_base)
                 .combine(ch_cluster_options))
+                .filter( ~/\/(.)+/ ) // ^^
                 .set {ch_filtered_alignments_3}
 
             CONCATENATE_ALIGNMENTS(ch_filtered_alignments_3
+                .reduce("") {gene_1, gene_2 -> "$gene_1 $gene_2"}
                 .combine(ch_container_base)
                 .combine(ch_cluster_options))
                 .set {ch_concatenated_alignment}
