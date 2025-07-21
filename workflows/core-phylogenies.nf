@@ -138,25 +138,29 @@ workflow CORE_PHYLOGENIES {
             .combine(ch_cluster_options))
             .set {ch_concatenated_alignment}
 
-        CALCULATE_SUBSTITUTION_MODEL(ch_concatenated_alignment
-            .combine(ch_container_modeltest_ng)
-            .combine(ch_cluster_options))
-            .set {ch_substitution_model}
+        if(!params.filter_only) { // Only runs the following steps if params.filter_only is set to false
 
-        MAKE_PHYLOGENY(ch_concatenated_alignment
-            .join(ch_substitution_model)
-            .combine(ch_container_raxml_ng)
-            .combine(ch_cluster_options))
-            .set {ch_phylogeny}
-        
-        MEASURE_RF_DISTANCE(ch_phylogeny
-            .combine(ch_reference_phylogeny)
-            .combine(ch_container_base)
-            .combine(ch_cluster_options))
-            .set {ch_rf_distance}
+            CALCULATE_SUBSTITUTION_MODEL(ch_concatenated_alignment
+                .combine(ch_container_modeltest_ng)
+                .combine(ch_cluster_options))
+                .set {ch_substitution_model}
 
-        MEASURE_AVERAGE_SUPPORT(ch_phylogeny
-            .combine(ch_container_base)
-            .combine(ch_cluster_options))
-            .set {ch_average_support}
+            MAKE_PHYLOGENY(ch_concatenated_alignment
+                .join(ch_substitution_model)
+                .combine(ch_container_raxml_ng)
+                .combine(ch_cluster_options))
+                .set {ch_phylogeny}
+            
+            MEASURE_RF_DISTANCE(ch_phylogeny
+                .combine(ch_reference_phylogeny)
+                .combine(ch_container_base)
+                .combine(ch_cluster_options))
+                .set {ch_rf_distance}
+
+            MEASURE_AVERAGE_SUPPORT(ch_phylogeny
+                .combine(ch_container_base)
+                .combine(ch_cluster_options))
+                .set {ch_average_support}
+
+        }
 }
