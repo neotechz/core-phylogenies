@@ -182,9 +182,9 @@ nextflow_pipeline {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert workflow.trace.succeeded().size() == 18 },
+                { assert workflow.trace.succeeded().size() == 20 },
                 { assert workflow.trace.failed().size() == 0 }, 
-                { assert workflow.trace.tasks().size() == 18 }
+                { assert workflow.trace.tasks().size() == 20 }
             )
         }
         
