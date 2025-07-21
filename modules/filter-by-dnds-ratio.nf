@@ -7,13 +7,18 @@ process FILTER_BY_DNDS_RATIO {
     clusterOptions "${cluster_options}"
 
     input:
-        tuple val(id), path(input_alignments), val(start), val(end), val(container), val(cluster_options) // ${input_alignments} is a directory!
+        tuple val(id), path(input_alignment), val(start), val(end), val(container), val(cluster_options) // ${input_alignment} is a file!
     
     output:
-        tuple val(id), path("${id}-filtered-3/")
+        tuple val(id), eval("echo \${RETURN}")
 
     script:
         """
-        filter-by-dnds-ratio.py ${input_alignments} ${id}-filtered-3 ${start} ${end}
+        ANSWER=`filter-by-dnds-ratio.py ${input_alignment} ${start} ${end}`
+        if [ "\${ANSWER}" == "TRUE" ]; then
+            RETURN="${input_alignment}"
+        else
+            RETURN=""
+        fi
         """
 }

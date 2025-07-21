@@ -7,13 +7,18 @@ process FILTER_BY_POLYMORPHIC_SITES {
     clusterOptions "${cluster_options}"
 
     input:
-        tuple val(id), path(input_alignments), val(cutoff), val(container), val(cluster_options) // ${input_alignments} is a directory!
+        tuple val(id), path(input_alignment), val(cutoff), val(container), val(cluster_options) // ${input_alignment} is a file!
     
     output:
-        tuple val(id), path("${id}-filtered-1/")
+        tuple val(id), eval("echo \${RETURN}")
 
     script:
         """
-        filter-by-normalized-polymorphic-sites.py ${input_alignments} ${id}-filtered-1 ${cutoff}
+        ANSWER=`filter-by-normalized-polymorphic-sites.py ${input_alignment} ${cutoff}`
+        if [ "\${ANSWER}" == "TRUE" ]; then
+            RETURN="${input_alignment}"
+        else
+            RETURN=""
+        fi
         """
 }
