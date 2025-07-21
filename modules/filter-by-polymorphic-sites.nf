@@ -2,6 +2,7 @@ process FILTER_BY_POLYMORPHIC_SITES {
     tag "${id}"
     cpus "${params.filter_by_polymorphic_sites_cpus}"
     memory "${params.filter_by_polymorphic_sites_memory} GB"
+    maxForks params.filter_by_polymorphic_sites_max_forks.toInteger()
     publishDir "${params.results}/filter-by-polymorphic-sites", mode: "copy"
     container "${container}"
     clusterOptions "${cluster_options}"

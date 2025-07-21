@@ -1,6 +1,7 @@
 process PREPARE_ID {
     cpus "${params.prepare_id_cpus}"
     memory "${params.prepare_id_memory} GB"
+    maxForks params.prepare_id_max_forks.toInteger()
     container "${container}"
     clusterOptions "${cluster_options}"
 

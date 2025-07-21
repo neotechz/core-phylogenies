@@ -2,6 +2,7 @@ process FORMAT_HEADERS {
     tag "${id}"
     cpus "${params.format_headers_cpus}"
     memory "${params.format_headers_memory} GB"
+    maxForks params.format_headers_max_forks.toInteger()
     publishDir "${params.results}/format-headers", mode: "copy"
     container "${container}"
     clusterOptions "${cluster_options}"
