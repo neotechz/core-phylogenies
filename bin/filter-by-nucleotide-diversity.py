@@ -171,6 +171,7 @@ def calculate_nucleotide_diversity(alignment_file, ignore_gaps=True):
                 total_comparable_positions = 0
                 comparison_count = 0
                 for seq1, seq2 in combinations(seq_strings, 2):
+                    print(f"{seq1}\n\nvs.\n\n{seq2}\n\n")
                     comparable = sum(1 for c1, c2 in zip(seq1, seq2) if c1 != '-' and c2 != '-')
                     if comparable > 0:
                         total_comparable_positions += comparable
