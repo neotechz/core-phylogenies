@@ -1,5 +1,8 @@
 nextflow run main.nf \
     --data "data" \
+    --data_reference null \
+    --filter_only false \
+    --measure_only false \
     --results "results" \
     --filter_by_polymorphic_sites_cutoff null \
     --filter_by_nucleotide_diversity_start null \
