@@ -7,13 +7,15 @@ process CONCATENATE_ALIGNMENTS {
     clusterOptions "${cluster_options}"
 
     input:
-        tuple val(id), path(input_alignments), val(container), val(cluster_options) // ${input_alignments} is a directory!
+        tuple val(id), val(input_alignments), val(container), val(cluster_options) // ${input_alignments} is a string of paths!
     
     output:
         tuple val(id), path("${id}-concatenated.fasta")
 
     script:
         """
-        concatenate-alignments.py ${input_alignments} ${id}-concatenated.fasta
+        mkdir input-alignments
+        cp ${input_alignments} input-alignments/
+        concatenate-alignments.py "\${PWD}/input-alignments" ${id}-concatenated.fasta
         """
 }
