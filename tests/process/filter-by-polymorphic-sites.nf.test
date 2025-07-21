@@ -5,7 +5,7 @@ nextflow_process {
     process "FILTER_BY_POLYMORPHIC_SITES"
     profile "local"
 
-    test("Terminates with no errors") {
+    test("Returns gene alignment file if above or equal to cutoff") {
 
         when {
             params {
@@ -14,32 +14,7 @@ nextflow_process {
             process {
                 """
                 input[0] = Channel.of(["prorocentrum-spp",
-                    "${projectDir}/tests/data/prorocentrum-spp-formatted",
-                    "${params.filter_by_polymorphic_sites_cutoff}",
-                    "\${params.container_base}",
-                    null])
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert process.success }
-            )
-        }
-
-    }
-
-    test("Produces output with correct ID and MD5 checksum") {
-
-        when {
-            params {
-                filter_by_polymorphic_sites_cutoff = 0.05
-            }
-            process {
-                """
-                input[0] = Channel.of(["prorocentrum-spp",
-                    "${projectDir}/tests/data/prorocentrum-spp-formatted",
+                    "${projectDir}/tests/data/prorocentrum-spp-formatted/18S.fasta",
                     "${params.filter_by_polymorphic_sites_cutoff}",
                     "\${params.container_base}",
                     null])
@@ -52,6 +27,33 @@ nextflow_process {
                 { assert process.success },
                 { assert process.out[0][0][0] == "prorocentrum-spp" },
                 { assert path("${process.out[0][0][1]}").exists() }
+            )
+        }
+        
+    }
+
+        test("Returns an empty string if below cutoff") {
+
+        when {
+            params {
+                filter_by_polymorphic_sites_cutoff = 0.05
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "${projectDir}/tests/data/prorocentrum-spp-formatted/18S.fasta",
+                    "${params.filter_by_polymorphic_sites_cutoff}",
+                    "\${params.container_base}",
+                    null])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out[0][0][0] == "prorocentrum-spp" },
+                { assert process.out[0][0][1] == "" }
             )
         }
         
