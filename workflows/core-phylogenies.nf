@@ -94,7 +94,7 @@ workflow CORE_PHYLOGENIES {
                 queries: true
             } // Separate reference tree from query trees, if applicable
             .set {ch_phylogenies}
-
+        
         Channel
             .of("${params.filter_by_polymorphic_sites_cutoff}")
             .set {ch_filter_by_polymorphic_sites_cutoff}
@@ -115,6 +115,15 @@ workflow CORE_PHYLOGENIES {
             .of("${params.filter_by_dnds_ratio_end}")
             .set {ch_filter_by_dnds_ratio_end}
 
+        Channel
+            .of("${params.data.split('/').last()}"
+                .concat("-${params.filter_by_polymorphic_sites_cutoff}")
+                .concat("-${params.filter_by_nucleotide_diversity_start}")
+                .concat("-${params.filter_by_nucleotide_diversity_end}")
+                .concat("-${params.filter_by_dnds_ratio_start}")
+                .concat("-${params.filter_by_dnds_ratio_end}"))
+            .set {ch_data_name} // To identify the dataset and constraint values used
+
 
         // Process flow      
         if(!params.measure_only) {
@@ -134,7 +143,7 @@ workflow CORE_PHYLOGENIES {
                 .combine(ch_filter_by_polymorphic_sites_cutoff)
                 .combine(ch_container_base)
                 .combine(ch_cluster_options))
-                .filter( ~/\/(.)+/ ) // Only those with valid paths are retained
+                .filter( ~/(.)*\/(.)+/ ) // Only those with valid paths are retained
                 .set {ch_filtered_alignments_1}
             
             FILTER_BY_NUCLEOTIDE_DIVERSITY(ch_filtered_alignments_1
@@ -142,7 +151,7 @@ workflow CORE_PHYLOGENIES {
                 .combine(ch_filter_by_nucleotide_diversity_end)
                 .combine(ch_container_base)
                 .combine(ch_cluster_options))
-                .filter( ~/\/(.)+/ ) // ^^
+                .filter( ~/(.)*\/(.)+/ ) // ^^
                 .set {ch_filtered_alignments_2}
             
             FILTER_BY_DNDS_RATIO(ch_filtered_alignments_2
@@ -150,11 +159,13 @@ workflow CORE_PHYLOGENIES {
                 .combine(ch_filter_by_dnds_ratio_end)
                 .combine(ch_container_base)
                 .combine(ch_cluster_options))
-                .filter( ~/\/(.)+/ ) // ^^
+                .filter( ~/(.)*\/(.)+/ ) // ^^
                 .set {ch_filtered_alignments_3}
 
-            CONCATENATE_ALIGNMENTS(ch_filtered_alignments_3
-                .reduce("") {gene_1, gene_2 -> "$gene_1 $gene_2"}
+            CONCATENATE_ALIGNMENTS(ch_data_name
+                .combine(ch_filtered_alignments_3
+                .map {gene -> gene[1]} // Extract the alignment path from the tuple
+                .reduce("") {gene_1, gene_2 -> "$gene_1 $gene_2"}) // Concatenate all alignment paths
                 .combine(ch_container_base)
                 .combine(ch_cluster_options))
                 .set {ch_concatenated_alignment}
