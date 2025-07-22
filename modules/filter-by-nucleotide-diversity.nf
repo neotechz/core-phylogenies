@@ -15,9 +15,9 @@ process FILTER_BY_NUCLEOTIDE_DIVERSITY {
 
     script:
         """
-        ANSWER=`filter-by-nucleotide-diversity.py ${input_alignment} ${start} ${end}`
+        ANSWER=`filter-by-nucleotide-diversity-optimized.py ${input_alignment} ${start} ${end}`
         if [ "\${ANSWER}" == "TRUE" ]; then
-            RETURN="${input_alignment}"
+            RETURN="\${PWD}/${input_alignment}"
         else
             RETURN=""
         fi
