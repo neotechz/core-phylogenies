@@ -321,7 +321,7 @@ nextflow_pipeline {
         }
     }
 
-    test("Terminates properly with complete input data is reduced upon filtering") { 
+    test("Terminates properly with complete input data that is reduced upon filtering") { 
         when {
             params {
                 data = "${projectDir}/tests/data/prorocentrum-spp-pipeline"
