@@ -83,17 +83,25 @@ workflow CORE_PHYLOGENIES {
         }
 
         // Input data
-        Channel
-            .fromPath("${params.data}/*.fa*", checkIfExists: true, type: "file")
-            .set {ch_input_alignments}
+        if (!params.measure_only) {
+            // Pipeline only needs input alignments if user wants to filter
 
-        Channel
-            .fromPath("${params.data}/*.tre", checkIfExists: true, type: "file")
-            .branch { tree ->
-                reference: tree.endsWith("${params.data_reference}")
-                queries: true
-            } // Separate reference tree from query trees, if applicable
-            .set {ch_phylogenies}
+            Channel
+                .fromPath("${params.data}/*.fa*", checkIfExists: true, type: "file")
+                .set {ch_input_alignments}
+        }
+        
+        if (!params.filter_only){
+            // Pipeline only needs input phylogenies if user wants to measure
+
+            Channel
+                .fromPath("${params.data}/*.tre", checkIfExists: true, type: "file")
+                .branch { tree ->
+                    reference: tree.endsWith("${params.data_reference}")
+                    queries: true
+                } // Separate reference tree from query trees, if applicable
+                .set {ch_phylogenies}
+        }
         
         Channel
             .of("${params.filter_by_polymorphic_sites_cutoff}")
