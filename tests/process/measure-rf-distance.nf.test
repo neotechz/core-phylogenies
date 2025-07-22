@@ -5,31 +5,6 @@ nextflow_process {
     process "MEASURE_RF_DISTANCE"
     profile "local"
 
-    test("Terminates with no errors") {
-
-        when {
-            params {
-                
-            }
-            process {
-                """
-                input[0] = Channel.of(["prorocentrum-spp",
-                    "${projectDir}/tests/data/prorocentrum-spp-trees/18s-only.raxml.support.tre",
-                    "${projectDir}/tests/data/prorocentrum-spp-trees/28s-only.raxml.support.tre",
-                    "\${params.container_base}",
-                    null])
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert process.success }
-            )
-        }
-
-    }
-
     test("Produces output with correct ID and MD5 checksum") {
 
         when {

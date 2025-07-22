@@ -5,31 +5,6 @@ nextflow_process {
     process "MAKE_PHYLOGENY"
     profile "local"
 
-    test("Terminates with no errors") {
-
-        when {
-            params {
-                
-            }
-            process {
-                """
-                input[0] = Channel.of(["prorocentrum-spp",
-                    "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta",
-                    "${projectDir}/tests/data/prorocentrum-spp-substitution-model.out",
-                    "\${params.container_raxml_ng}",
-                    null])
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert process.success }
-            )
-        }
-
-    }
-
     test("Produces output with correct ID and MD5 checksum") {
 
         when {
