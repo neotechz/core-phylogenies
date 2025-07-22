@@ -11,7 +11,6 @@ Usage:
     python filter_dnds_passfail.py <input_fasta> <min_dnds> <max_dnds> [--include-gaps]
 """
 
-import sys
 import argparse
 from Bio import SeqIO
 from Bio.codonalign.codonseq import cal_dn_ds
@@ -82,10 +81,17 @@ def main():
         return
 
     avg = average_dnds(args.input_fasta, args.include_gaps)
-    if avg is not None and args.min_dnds <= avg <= args.max_dnds:
+    within_range:bool = avg is not None and args.min_dnds <= avg <= args.max_dnds
+    if within_range:
         print("TRUE")
     else:
         print("FALSE")
+
+    log_path = args.input_fasta + ".log"
+    with open(log_path, 'w') as log_file:
+        log_file.write(f"Average: {avg}\n")
+        log_file.write(f"Min: {args.min_dnds}, Max: {args.max_dnds}\n")
+        log_file.write("Result: " + ("TRUE" if within_range else "FALSE") + "\n")
 
 if __name__ == "__main__":
     main()
