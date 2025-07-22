@@ -29,6 +29,7 @@ Example:
 
 import sys
 import argparse
+import os
 from Bio import AlignIO
 
 def compute_polymorphic_rate(alignment):
@@ -63,6 +64,15 @@ def main():
         print("TRUE")
     else:
         print("FALSE")
+
+    # Create log
+    log_path = args.input_fasta + ".log"
+    with open(log_path, 'w') as log_file:
+        log_file.write(f"Polymorphic sites: {poly}\n")
+        log_file.write(f"Total columns: {length}\n")
+        log_file.write(f"Polymorphic site rate: {rate:.4f}\n")
+        log_file.write(f"Minimum required rate: {args.min_rate:.4f}\n")
+        log_file.write("Result: " + ("TRUE" if rate >= args.min_rate else "FALSE") + "\n")  
 
 if __name__ == "__main__":
     main()
