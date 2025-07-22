@@ -11,7 +11,6 @@ Usage:
     python filter_dnds_passfail.py <input_fasta> <min_dnds> <max_dnds> [--include-gaps]
 """
 
-import sys
 import argparse
 from Bio import SeqIO
 from Bio.codonalign.codonseq import cal_dn_ds
@@ -50,9 +49,15 @@ def average_dnds(recs, include_gaps):
             return None
     ratios = []
     for x, y in combinations(cs_list, 2):
+        do_skip:bool = False
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            dn, ds = cal_dn_ds(x, y, method="NG86")
+            try:
+                dn, ds = cal_dn_ds(x, y, method="NG86")
+            except:
+                do_skip = True
+        if do_skip:
+            continue
         if ds > 0:
             ratios.append(dn/ds)
         elif dn == 0:
@@ -77,7 +82,14 @@ def main():
         return
 
     avg = average_dnds(recs, args.include_gaps)
-    print("TRUE" if (avg is not None and args.min_dnds <= avg <= args.max_dnds) else "FALSE")
+    within_range:bool = (avg is not None and args.min_dnds <= avg <= args.max_dnds)
+    print("TRUE" if within_range else "FALSE")
+
+    log_path = args.input_fasta + ".log"
+    with open(log_path, 'w') as log_file:
+        log_file.write(f"Average: {avg}\n")
+        log_file.write(f"Min: {args.min_dnds}, Max: {args.max_dnds}\n")
+        log_file.write("Result: " + ("TRUE" if within_range else "FALSE") + "\n")
 
 if __name__ == "__main__":
     main()
