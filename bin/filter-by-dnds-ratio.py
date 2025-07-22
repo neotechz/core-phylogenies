@@ -52,9 +52,15 @@ def average_dnds(aln_file, include_gaps):
             return None
     ratios = []
     for i, j in combinations(range(len(codon_seqs)), 2):
+        do_skip:bool = False
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            dn, ds = cal_dn_ds(codon_seqs[i], codon_seqs[j], method="NG86")
+            try:
+                dn, ds = cal_dn_ds(codon_seqs[i], codon_seqs[j], method="NG86")
+            except Exception:
+                do_skip = True
+        if do_skip:
+            continue
         if ds > 0:
             ratios.append(dn / ds)
         elif dn == 0:
