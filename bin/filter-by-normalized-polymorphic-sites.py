@@ -27,9 +27,7 @@ Example:
     python filter_polymorphic_rate_passfail.py gene1.fasta 0.10
 """
 
-import sys
 import argparse
-import os
 from Bio import AlignIO
 
 def compute_polymorphic_rate(alignment):
