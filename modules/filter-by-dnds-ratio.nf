@@ -15,7 +15,7 @@ process FILTER_BY_DNDS_RATIO {
 
     script:
         """
-        ANSWER=`filter-by-dnds-ratio.py ${input_alignment} ${start} ${end}`
+        ANSWER=`filter-by-dnds-ratio-optimized.py ${input_alignment} ${start} ${end}`
         if [ "\${ANSWER}" == "TRUE" ]; then
             RETURN="\${PWD}/${input_alignment}"
         else
