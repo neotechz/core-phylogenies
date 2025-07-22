@@ -217,7 +217,6 @@ nextflow_pipeline {
     } 
 
     test("Terminates properly when given complete input with 'filter_only' param") { 
-
         when {
             params {
                 data = "${projectDir}/tests/data/prorocentrum-spp-pipeline"
@@ -251,12 +250,12 @@ nextflow_pipeline {
                 // 2 FILTER_BY_NUCLEOTIDE_DIVERSITY
                 // 2 FILTER_BY_DNDS_RATIO
                 // 1 CONCATENATE_ALIGNMENTS
+            )
         }
         
     }
 
     test("Terminates properly when given complete input with 'measure_only' param") { 
-
         when {
             params {
                 data = "${projectDir}/tests/data/prorocentrum-spp-pipeline"
@@ -283,7 +282,6 @@ nextflow_pipeline {
     }
 
     test("Terminates properly with complete input data that passes all filters") { 
-
         when {
             params {
                 data = "${projectDir}/tests/data/prorocentrum-spp-pipeline"
@@ -321,9 +319,9 @@ nextflow_pipeline {
                 // 1 MEASURE_AVERAGE_SUPPORT
             )
         }
+    }
 
-        test("Terminates properly with complete input data is reduced upon filtering") { 
-
+    test("Terminates properly with complete input data is reduced upon filtering") { 
         when {
             params {
                 data = "${projectDir}/tests/data/prorocentrum-spp-pipeline"
