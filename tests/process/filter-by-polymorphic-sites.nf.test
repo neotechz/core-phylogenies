@@ -36,7 +36,7 @@ nextflow_process {
 
         when {
             params {
-                filter_by_polymorphic_sites_cutoff = 0.05
+                filter_by_polymorphic_sites_cutoff = 0.12
             }
             process {
                 """
