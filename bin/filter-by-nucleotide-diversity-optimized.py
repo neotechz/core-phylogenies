@@ -11,7 +11,6 @@ Usage:
     python filter_diversity_passfail.py <input_fasta> <min_diversity> <max_diversity> [--include-gaps]
 """
 
-import sys
 import argparse
 from Bio import SeqIO
 import numpy as np
@@ -56,10 +55,17 @@ def main():
         return
 
     pi = calculate_nucleotide_diversity(seqs, ignore_gaps=not args.include_gaps)
-    if pi is not None and args.min_diversity <= pi <= args.max_diversity:
+    within_range:bool = pi is not None and args.min_diversity <= pi <= args.max_diversity
+    if within_range:
         print("TRUE")
     else:
         print("FALSE")
+
+    log_path = args.input_fasta + ".log"
+    with open(log_path, 'w') as log_file:
+        log_file.write(f"π: {pi}\n")
+        log_file.write(f"Min: {args.min_diversity}, Max: {args.max_diversity}\n")
+        log_file.write("Result: " + ("TRUE" if within_range else "FALSE") + "\n")
 
 if __name__ == "__main__":
     main()
