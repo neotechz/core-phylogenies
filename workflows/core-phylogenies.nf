@@ -140,11 +140,15 @@ workflow CORE_PHYLOGENIES {
             PREPARE_ID(ch_input_alignments
                 .combine(ch_container_base)
                 .combine(ch_cluster_options))
+                .collect(flat: false) // Wait for all alignments to be processed before continuing
+                .flatMap {gene -> gene} // ^^^
                 .set {ch_alignments_with_id}
 
             FORMAT_HEADERS(ch_alignments_with_id
                 .combine(ch_container_base)
                 .combine(ch_cluster_options))
+                .collect(flat: false) // ^^^
+                .flatMap {gene -> gene} // ^^^
                 .set {ch_formatted_alignments}
 
             FILTER_BY_POLYMORPHIC_SITES(ch_formatted_alignments
@@ -152,6 +156,8 @@ workflow CORE_PHYLOGENIES {
                 .combine(ch_container_base)
                 .combine(ch_cluster_options))
                 .filter( ~/(.)*\/(.)+/ ) // Only those with valid paths are retained
+                .collect(flat: false) // ^^^
+                .flatMap {gene -> gene} // ^^^
                 .set {ch_filtered_alignments_1}
             
             FILTER_BY_NUCLEOTIDE_DIVERSITY(ch_filtered_alignments_1
@@ -160,6 +166,8 @@ workflow CORE_PHYLOGENIES {
                 .combine(ch_container_base)
                 .combine(ch_cluster_options))
                 .filter( ~/(.)*\/(.)+/ ) // ^^
+                .collect(flat: false) // ^^^
+                .flatMap {gene -> gene} // ^^^
                 .set {ch_filtered_alignments_2}
             
             FILTER_BY_DNDS_RATIO(ch_filtered_alignments_2
@@ -168,6 +176,8 @@ workflow CORE_PHYLOGENIES {
                 .combine(ch_container_base)
                 .combine(ch_cluster_options))
                 .filter( ~/(.)*\/(.)+/ ) // ^^
+                .collect(flat: false) // ^^^
+                .flatMap {gene -> gene} // ^^^
                 .set {ch_filtered_alignments_3}
 
             CONCATENATE_ALIGNMENTS(ch_data_name
