@@ -17,7 +17,7 @@ process FILTER_BY_DNDS_RATIO {
         """
         ANSWER=`filter-by-dnds-ratio.py ${input_alignment} ${start} ${end}`
         if [ "\${ANSWER}" == "TRUE" ]; then
-            RETURN="${input_alignment}"
+            RETURN="\${PWD}/${input_alignment}"
         else
             RETURN=""
         fi
