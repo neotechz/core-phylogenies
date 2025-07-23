@@ -5,7 +5,7 @@ nextflow_process {
     process "CALCULATE_SUBSTITUTION_MODEL"
     profile "local"
 
-    test("Produces output with correct ID and MD5 checksum") {
+    test("Produces concatenated alignment and list of filtered genes") {
 
         when {
             params {
@@ -25,7 +25,8 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert process.out[0][0][0] == "prorocentrum-spp" },
-                { assert new File(process.out[0][0][1]).exists()} // {id}-substitution-model.out md5sum not constant
+                { assert new File(process.out[0][0][1]).exists()} // {id}-substitution-model.out
+                { assert new File(process.out[0][0][2]).exists()} // genes-after-filtering.txt
             )
         }
         
