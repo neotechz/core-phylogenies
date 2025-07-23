@@ -60,24 +60,21 @@ workflow CORE_PHYLOGENIES {
         }
 
         if (!params.measure_only) {
+            // Pipeline doesn't need to check for input constraints if user only wants to measure
 
-            if (!params.filter_by_polymorphic_sites_cutoff) {
-                error "ERROR: Cutoff for filtering by polymorphic sites not specified (--filter_by_polymorphic_sites_cutoff)"
-            }
-
-            if (!params.filter_by_nucleotide_diversity_start) {
+            if (!params.filter_by_nucleotide_diversity_start && params.filter_by_nucleotide_diversity_end) {
                 error "ERROR: Start of range for filtering by nucleotide diversity not specified (--filter_by_nucleotide_diversity_start)"
             }
 
-            if (!params.filter_by_nucleotide_diversity_end) {
+            if (params.filter_by_nucleotide_diversity_start && !params.filter_by_nucleotide_diversity_end) {
                 error "ERROR: End of range for filtering by nucleotide diversity not specified (--filter_by_nucleotide_diversity_end)"
             }
 
-            if (!params.filter_by_dnds_ratio_start) {
+            if (!params.filter_by_dnds_ratio_start && params.filter_by_dnds_ratio_end) {
                 error "ERROR: Start of range for filtering by dN/dS ratio not specified (--filter_by_dnds_ratio_start)"
             }
 
-            if (!params.filter_by_dnds_ratio_end) {
+            if (params.filter_by_dnds_ratio_start && !params.filter_by_dnds_ratio_end) {
                 error "ERROR: End of range for filtering by dN/dS ratio not specified (--filter_by_dnds_ratio_end)"
             }
         }
@@ -125,16 +122,16 @@ workflow CORE_PHYLOGENIES {
 
         Channel
             .of("${params.data.split('/').last()}"
-                .concat("-${params.filter_by_polymorphic_sites_cutoff}")
-                .concat("-${params.filter_by_nucleotide_diversity_start}")
-                .concat("-${params.filter_by_nucleotide_diversity_end}")
-                .concat("-${params.filter_by_dnds_ratio_start}")
-                .concat("-${params.filter_by_dnds_ratio_end}"))
+                .concat("-${params.filter_by_polymorphic_sites_cutoff ?: ''}") // If null, it will be empty
+                .concat("-${params.filter_by_nucleotide_diversity_start  ?: ''}") // ^
+                .concat("-${params.filter_by_nucleotide_diversity_end ?: ''}") // ^
+                .concat("-${params.filter_by_dnds_ratio_start ?: ''}") // ^
+                .concat("-${params.filter_by_dnds_ratio_end  ?: ''}")) // ^
             .set {ch_data_name} // To identify the dataset and constraint values used
 
 
         // Process flow      
-        if(!params.measure_only) {
+        if (!params.measure_only) {
             // Pipeline wont filter if user only wants to measure
 
             PREPARE_ID(ch_input_alignments
@@ -151,34 +148,63 @@ workflow CORE_PHYLOGENIES {
                 .flatMap {gene -> gene} // ^^^
                 .set {ch_formatted_alignments}
 
-            FILTER_BY_POLYMORPHIC_SITES(ch_formatted_alignments
-                .combine(ch_filter_by_polymorphic_sites_cutoff)
-                .combine(ch_container_base)
-                .combine(ch_cluster_options))
-                .filter( ~/(.)*\/(.)+/ ) // Only those with valid paths are retained
-                .collect(flat: false) // ^^^
-                .flatMap {gene -> gene} // ^^^
-                .set {ch_filtered_alignments_1}
+            if (params.filter_by_polymorphic_sites_cutoff) {
+                // Pipeline will filter by polymorphic sites if user specified a cutoff
+
+                FILTER_BY_POLYMORPHIC_SITES(ch_formatted_alignments
+                    .combine(ch_filter_by_polymorphic_sites_cutoff)
+                    .combine(ch_container_base)
+                    .combine(ch_cluster_options))
+                    .filter( ~/(.)*\/(.)+/ ) // Only those with valid paths are retained
+                    .collect(flat: false) // ^^^
+                    .flatMap {gene -> gene} // ^^^
+                    .set {ch_filtered_alignments_1}
+
+            } else {
+                 // No filtering by polymorphic sites, use formatted alignments directly
+
+                ch_formatted_alignments
+                    .set {ch_filtered_alignments_1}
+            }
+
+            if (params.filter_by_nucleotide_diversity_start && params.filter_by_nucleotide_diversity_end) {
+                // Pipeline will filter by nucleotide diversity if user specified a range
+
+                FILTER_BY_NUCLEOTIDE_DIVERSITY(ch_filtered_alignments_1
+                    .combine(ch_filter_by_nucleotide_diversity_start)
+                    .combine(ch_filter_by_nucleotide_diversity_end)
+                    .combine(ch_container_base)
+                    .combine(ch_cluster_options))
+                    .filter( ~/(.)*\/(.)+/ ) // ^^
+                    .collect(flat: false) // ^^^
+                    .flatMap {gene -> gene} // ^^^
+                    .set {ch_filtered_alignments_2}
+            } else {
+                // No filtering by nucleotide diversity, use previous alignments directly
+
+                ch_filtered_alignments_1
+                    .set {ch_filtered_alignments_2}
+            }
             
-            FILTER_BY_NUCLEOTIDE_DIVERSITY(ch_filtered_alignments_1
-                .combine(ch_filter_by_nucleotide_diversity_start)
-                .combine(ch_filter_by_nucleotide_diversity_end)
-                .combine(ch_container_base)
-                .combine(ch_cluster_options))
-                .filter( ~/(.)*\/(.)+/ ) // ^^
-                .collect(flat: false) // ^^^
-                .flatMap {gene -> gene} // ^^^
-                .set {ch_filtered_alignments_2}
-            
-            FILTER_BY_DNDS_RATIO(ch_filtered_alignments_2
-                .combine(ch_filter_by_dnds_ratio_start)
-                .combine(ch_filter_by_dnds_ratio_end)
-                .combine(ch_container_base)
-                .combine(ch_cluster_options))
-                .filter( ~/(.)*\/(.)+/ ) // ^^
-                .collect(flat: false) // ^^^
-                .flatMap {gene -> gene} // ^^^
-                .set {ch_filtered_alignments_3}
+            if (params.filter_by_dnds_ratio_start && params.filter_by_dnds_ratio_end) {
+                // Pipeline will filter by dN/dS ratio if user specified a range
+
+                FILTER_BY_DNDS_RATIO(ch_filtered_alignments_2
+                    .combine(ch_filter_by_dnds_ratio_start)
+                    .combine(ch_filter_by_dnds_ratio_end)
+                    .combine(ch_container_base)
+                    .combine(ch_cluster_options))
+                    .filter( ~/(.)*\/(.)+/ ) // ^^
+                    .collect(flat: false) // ^^^
+                    .flatMap {gene -> gene} // ^^^
+                    .set {ch_filtered_alignments_3}
+
+            } else {
+                // No filtering by dN/dS ratio, use previous alignments directly
+
+                ch_filtered_alignments_2
+                    .set {ch_filtered_alignments_3}
+            }
 
             CONCATENATE_ALIGNMENTS(ch_data_name
                 .combine(ch_filtered_alignments_3
