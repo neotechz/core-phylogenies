@@ -212,6 +212,7 @@ workflow CORE_PHYLOGENIES {
                 .reduce("") {gene_1, gene_2 -> "$gene_1 $gene_2"}) // Concatenate all alignment paths
                 .combine(ch_container_base)
                 .combine(ch_cluster_options))
+                .map {alignment -> [alignment[0], alignment[1]]} // Get only the ID and concatenated alignment path
                 .set {ch_concatenated_alignment}
         
         } else {
