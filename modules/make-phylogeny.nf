@@ -26,7 +26,7 @@ process MAKE_PHYLOGENY {
             --seed 119318 \
             --bs-metric tbe \
             --tree rand{1} \
-            --bs-trees 1000 \
+            --bs-trees ${params.make_phylogeny_bootstraps} \
             --threads ${task.cpus} \
             --force perf_threads
 
