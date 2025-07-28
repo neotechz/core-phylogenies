@@ -45,13 +45,21 @@ workflow CORE_PHYLOGENIES {
             .of("${resolveContainerPath(params.container_raxml_ng)}")
             .set {ch_container_raxml_ng}
 
+        Channel
+            .of("${resolveContainerPath(params.container_iqtree2)}")
+            .set {ch_container_iqtree2}
+
+        Channel
+            .of("${resolveContainerPath(params.container_fasttree)}")
+            .set {ch_container_fasttree}
+
 
         // Error handling for input params
         if (!params.data) {
             error "ERROR: Input directory not specified (--data)"
         }
 
-        if(params.filter_only && params.measure_only) {
+        if (params.filter_only && params.measure_only) {
             error "ERROR: Cannot use both --filter_only and --measure_only options at the same time"
         }
 
@@ -79,6 +87,22 @@ workflow CORE_PHYLOGENIES {
             }
         }
 
+        if (!params.filter_only && !params.measure_only) {
+            // Only when it has to make a phylogeny
+
+            def valid_methods = ["raxml-ng", "iqtree2", "fasttree"]
+
+            if(!params.make_phylogeny_method) {
+                error "ERROR: Missing method ('raxml-ng', 'iqtree2', 'fasttree') for MAKE_PHYLOGENY module"
+            }
+
+            if (!valid_methods.contains(params.make_phylogeny_method)) {
+                error "ERROR: Invalid value for MAKE_PHLOGENY method ('raxml-ng', 'iqtree2', 'fasttree')"
+            }
+
+        }
+
+
         // Input data
         if (!params.measure_only) {
             // Pipeline only needs input alignments if user wants to filter
@@ -99,6 +123,30 @@ workflow CORE_PHYLOGENIES {
                 } // Separate reference tree from query trees, if applicable
                 .set {ch_phylogenies}
         }
+
+        if (!params.filter_only && ! params.measure_only) {
+            // Pipeline needs to set the correct container for MAKE_PHYLOGENY
+
+            if (params.make_phylogeny_method == "raxml-ng") {
+
+                ch_container_raxml_ng
+                    .set{ch_container_make_phylogeny}
+
+            } else if (params.make_phylogeny_method == "iqtree2") {
+
+                ch_container_iqtree2
+                    .set{ch_container_make_phylogeny}
+
+            } else if (params.make_phylogeny_method == "fasttree") {
+                
+                ch_container_fasttree
+                    .set{ch_container_make_phylogeny}
+
+            }
+        }
+        
+
+
         
         Channel
             .of("${params.filter_by_polymorphic_sites_cutoff}")
@@ -235,7 +283,7 @@ workflow CORE_PHYLOGENIES {
 
             MAKE_PHYLOGENY(ch_concatenated_alignment
                 .join(ch_substitution_model)
-                .combine(ch_container_raxml_ng)
+                .combine(ch_container_make_phylogeny)  // Depends on which method is used ('raxml-ng', 'iqtree2', 'fastttree')
                 .combine(ch_cluster_options))
                 .set {ch_phylogeny}
 
