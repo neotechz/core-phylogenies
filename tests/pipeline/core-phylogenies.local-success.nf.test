@@ -186,7 +186,7 @@ nextflow_pipeline {
         
     }
 
-    test("Terminates properly with complete input data that passes all filters") { 
+    test("Constructs tree via 'raxml-ng' with complete input data") { 
         when {
             params {
                 data = "${projectDir}/tests/data/prorocentrum-spp-pipeline"
@@ -202,6 +202,9 @@ nextflow_pipeline {
                 // FILTER_BY_DNDS_RATIO
                 filter_by_dnds_ratio_start = 0.1
                 filter_by_dnds_ratio_end = 1.0
+
+                // MAKE_PHYLOGENY
+                make_phylogeny_method = "raxml-ng"
             }
         }
 
@@ -226,7 +229,7 @@ nextflow_pipeline {
         }
     }
 
-    test("Terminates properly with complete input data that is reduced upon filtering") { 
+    test("Constructs tree via 'raxml-ng' with filtered input data") { 
         when {
             params {
                 data = "${projectDir}/tests/data/prorocentrum-spp-pipeline"
@@ -242,6 +245,9 @@ nextflow_pipeline {
                 // FILTER_BY_DNDS_RATIO
                 filter_by_dnds_ratio_start = 0.1
                 filter_by_dnds_ratio_end = 1.0
+
+                // MAKE_PHYLOGENY
+                make_phylogeny_method = "raxml-ng"
             }
         }
 
@@ -265,5 +271,91 @@ nextflow_pipeline {
             )
         }
         
+    }
+
+    test("Constructs tree via 'iqtree2' with complete input data") { 
+        when {
+            params {
+                data = "${projectDir}/tests/data/prorocentrum-spp-pipeline"
+                data_reference = "reference.support.tre"
+
+                // FILTER_BY_POLYMORPHIC_SITES
+                filter_by_polymorphic_sites_cutoff = 0.05
+
+                // FILTER_BY_NUCLEOTIDE_DIVERSITY
+                filter_by_nucleotide_diversity_start = 0.05
+                filter_by_nucleotide_diversity_end = 0.8
+
+                // FILTER_BY_DNDS_RATIO
+                filter_by_dnds_ratio_start = 0.1
+                filter_by_dnds_ratio_end = 1.0
+
+                // MAKE_PHYLOGENY
+                make_phylogeny_method = "iqtree2"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.trace.succeeded().size() == 15 },
+                { assert workflow.trace.failed().size() == 0 }, 
+                { assert workflow.trace.tasks().size() == 15 }
+
+                // 2 PREPARE_ID
+                // 2 FORMAT_HEADERS
+                // 2 FILTER_BY_POLYMORPHIC_SITES
+                // 2 FILTER_BY_NUCLEOTIDE_DIVERSITY
+                // 2 FILTER_BY_DNDS_RATIO
+                // 1 CONCATENATE_ALIGNMENTS
+                // 1 CALCULATE_SUBSTITUTION_MODEL
+                // 1 MAKE_PHYLOGENY
+                // 1 MEASURE_RF_DISTANCE
+                // 1 MEASURE_AVERAGE_SUPPORT
+            )
+        }
+    }
+
+    test("Constructs tree via 'fasttree' with complete input data") { 
+        when {
+            params {
+                data = "${projectDir}/tests/data/prorocentrum-spp-pipeline"
+                data_reference = "reference.support.tre"
+
+                // FILTER_BY_POLYMORPHIC_SITES
+                filter_by_polymorphic_sites_cutoff = 0.05
+
+                // FILTER_BY_NUCLEOTIDE_DIVERSITY
+                filter_by_nucleotide_diversity_start = 0.05
+                filter_by_nucleotide_diversity_end = 0.8
+
+                // FILTER_BY_DNDS_RATIO
+                filter_by_dnds_ratio_start = 0.1
+                filter_by_dnds_ratio_end = 1.0
+
+                // MAKE_PHYLOGENY
+                make_phylogeny_method = "fasttree"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.trace.succeeded().size() == 15 },
+                { assert workflow.trace.failed().size() == 0 }, 
+                { assert workflow.trace.tasks().size() == 15 }
+
+                // 2 PREPARE_ID
+                // 2 FORMAT_HEADERS
+                // 2 FILTER_BY_POLYMORPHIC_SITES
+                // 2 FILTER_BY_NUCLEOTIDE_DIVERSITY
+                // 2 FILTER_BY_DNDS_RATIO
+                // 1 CONCATENATE_ALIGNMENTS
+                // 1 CALCULATE_SUBSTITUTION_MODEL
+                // 1 MAKE_PHYLOGENY
+                // 1 MEASURE_RF_DISTANCE
+                // 1 MEASURE_AVERAGE_SUPPORT
+            )
+        }
     }
 }
