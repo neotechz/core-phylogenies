@@ -5,7 +5,7 @@ nextflow_process {
     process "MAKE_PHYLOGENY"
     profile "local"
 
-    test("Produces output with correct ID and MD5 checksum") {
+    test("Constructs tree using raxml-ng") {
 
         when {
             params {
@@ -17,6 +17,60 @@ nextflow_process {
                     "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta",
                     "${projectDir}/tests/data/prorocentrum-spp-substitution-model.out",
                     "\${params.container_raxml_ng}",
+                    null])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out[0][0][0] == "prorocentrum-spp" },
+                { assert new File(process.out[0][0][1]).exists()} // {id}.raxml.support md5sum not constant
+            )
+        }
+        
+    }
+
+    test("Constructs tree using fasttree") {
+
+        when {
+            params {
+
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta",
+                    "${projectDir}/tests/data/prorocentrum-spp-substitution-model.out",
+                    "\${params.container_fasttree}",
+                    null])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out[0][0][0] == "prorocentrum-spp" },
+                { assert new File(process.out[0][0][1]).exists()} // {id}.raxml.support md5sum not constant
+            )
+        }
+        
+    }
+
+    test("Constructs tree using iqtree2") {
+
+        when {
+            params {
+
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta",
+                    "${projectDir}/tests/data/prorocentrum-spp-substitution-model.out",
+                    "\${params.container_iqtree2}",
                     null])
                 """
             }
