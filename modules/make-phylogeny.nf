@@ -42,7 +42,7 @@ process MAKE_PHYLOGENY {
                 -s ${alignment} \
                 -m \$MODEL \
                 -b ${params.make_phylogeny_bootstraps} \
-                --bnni \
+                -fast \
                 -T ${task.cpus} \
                 --prefix ${id} \
                 --seed 119318
