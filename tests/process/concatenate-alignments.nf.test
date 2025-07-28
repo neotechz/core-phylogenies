@@ -5,7 +5,7 @@ nextflow_process {
     process "CONCATENATE_ALIGNMENTS"
     profile "local"
 
-    test("Takes in paths as string and returns one concatenated alignment") {
+    test("Takes in string and returns concatenated alignment and list of genes") {
 
         when {
             params {
@@ -25,7 +25,8 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert process.out[0][0][0] == "prorocentrum-spp" },
-                { assert path("${process.out[0][0][1]}").exists() }
+                { assert path("${process.out[0][0][1]}").exists() }, // concatenated-alignment
+                { assert path("${process.out[0][0][2]}").exists()} // genes-after-filtering.txt
             )
         }
         

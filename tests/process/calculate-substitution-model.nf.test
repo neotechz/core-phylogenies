@@ -5,7 +5,7 @@ nextflow_process {
     process "CALCULATE_SUBSTITUTION_MODEL"
     profile "local"
 
-    test("Produces concatenated alignment and list of filtered genes") {
+    test("Finds best susbstitution model") {
 
         when {
             params {
@@ -26,7 +26,6 @@ nextflow_process {
                 { assert process.success },
                 { assert process.out[0][0][0] == "prorocentrum-spp" },
                 { assert new File(process.out[0][0][1]).exists()} // {id}-substitution-model.out
-                { assert new File(process.out[0][0][2]).exists()} // genes-after-filtering.txt
             )
         }
         
