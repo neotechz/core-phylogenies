@@ -145,9 +145,6 @@ workflow CORE_PHYLOGENIES {
             }
         }
         
-
-
-        
         Channel
             .of("${params.filter_by_polymorphic_sites_cutoff}")
             .set {ch_filter_by_polymorphic_sites_cutoff}
