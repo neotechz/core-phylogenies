@@ -191,7 +191,7 @@ nextflow_pipeline {
         
     }
 
-    test("Terminates properly when constructing tree via 'raxml-ng' after filtering") { 
+    test("Terminates properly when constructing tree via 'raxml-ng' without measuring") { 
         when {
             params {
                 data = "${projectDir}/tests/data/prorocentrum-spp-pipeline"
@@ -235,7 +235,7 @@ nextflow_pipeline {
         }
     }
 
-    test("Terminates properly when constructing tree via 'iqtree2' after filtering") { 
+    test("Terminates properly when constructing tree via 'iqtree2' without measuring") { 
         when {
             params {
                 data = "${projectDir}/tests/data/prorocentrum-spp-pipeline"
@@ -279,7 +279,7 @@ nextflow_pipeline {
         }
     }
 
-    test("Terminates properly when constructing tree via 'fasttree' after filtering") { 
+    test("Terminates properly when constructing tree via 'fasttree' without measuring") { 
         when {
             params {
                 data = "${projectDir}/tests/data/prorocentrum-spp-pipeline"
