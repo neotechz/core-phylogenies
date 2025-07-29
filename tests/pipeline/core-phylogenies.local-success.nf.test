@@ -341,9 +341,9 @@ nextflow_pipeline {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert workflow.trace.succeeded().size() == 15 },
+                { assert workflow.trace.succeeded().size() == 14 },
                 { assert workflow.trace.failed().size() == 0 }, 
-                { assert workflow.trace.tasks().size() == 15 }
+                { assert workflow.trace.tasks().size() == 14 }
 
                 // 2 PREPARE_ID
                 // 2 FORMAT_HEADERS
@@ -351,7 +351,7 @@ nextflow_pipeline {
                 // 2 FILTER_BY_NUCLEOTIDE_DIVERSITY
                 // 2 FILTER_BY_DNDS_RATIO
                 // 1 CONCATENATE_ALIGNMENTS
-                // 1 CALCULATE_SUBSTITUTION_MODEL
+                // 0 CALCULATE_SUBSTITUTION_MODEL
                 // 1 MAKE_PHYLOGENY
                 // 1 MEASURE_RF_DISTANCE
                 // 1 MEASURE_AVERAGE_SUPPORT

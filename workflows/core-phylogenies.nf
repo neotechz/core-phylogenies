@@ -273,10 +273,21 @@ workflow CORE_PHYLOGENIES {
         if(!params.measure_only && !params.filter_only) { 
             // Pipeline wont make a phylogeny if user only wants to filter or measure
 
-            CALCULATE_SUBSTITUTION_MODEL(ch_concatenated_alignment
-                .combine(ch_container_modeltest_ng)
-                .combine(ch_cluster_options))
-                .set {ch_substitution_model}
+            if(params.make_phylogeny_method != 'fasttree') {
+                // Substitution model for raxml-ng and iqtree2
+
+                CALCULATE_SUBSTITUTION_MODEL(ch_concatenated_alignment
+                    .combine(ch_container_modeltest_ng)
+                    .combine(ch_cluster_options))
+                    .set {ch_substitution_model} 
+
+            } else {
+                // No model needed for fasttree
+
+                ch_concatenated_alignment
+                    .map {alignment -> [alignment[0], "${params.data}"]} // Get only the ID, second element is filler
+                    .set {ch_substitution_model} 
+            }
 
             MAKE_PHYLOGENY(ch_concatenated_alignment
                 .join(ch_substitution_model)
