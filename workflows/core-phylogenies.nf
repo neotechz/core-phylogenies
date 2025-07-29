@@ -285,7 +285,7 @@ workflow CORE_PHYLOGENIES {
                 // No model needed for fasttree
 
                 ch_concatenated_alignment
-                    .map {alignment -> [alignment[0], "."]} // Get only the ID, second element is filler
+                    .map {alignment -> [alignment[0], "/"]} // Get only the ID, second element is filler
                     .set {ch_substitution_model} 
             }
 
