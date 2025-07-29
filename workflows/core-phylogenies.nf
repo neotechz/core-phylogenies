@@ -59,16 +59,25 @@ workflow CORE_PHYLOGENIES {
             error "ERROR: Input directory not specified (--data)"
         }
 
-        if (params.filter_only && params.measure_only) {
-            error "ERROR: Cannot use both --filter_only and --measure_only options at the same time"
+        if (!params.pipeline_filter && !params.pipeline_phylo && !params.pipeline_measure) {
+            error "ERROR: Cannot set all --pipeline_* options to false at the same time"
+        }
+        
+        if (params.pipeline_filter && !params.pipeline_phylo && params.pipeline_measure) {
+            error "ERROR: Cannot do both filtering and measuring togther without making phylogeny"
         }
 
-        if (!params.filter_only && !params.data_reference) {
+        if (!params.pipeline_filter && params.pipeline_phylo && params.pipeline_measure) {
+            error "ERROR: Cannot make phylogeny by supplying input concatenated alignment; please specify individual gene alignments"
+        }
+
+        if (params.pipeline_measure && !params.data_reference) {
             error "ERROR: Reference tree for RF distance measurement not specified (--data_reference)"
         }
 
-        if (!params.measure_only) {
-            // Pipeline doesn't need to check for input constraints if user only wants to measure
+        if (params.pipeline_filter) {
+            // Pipeline needs to check for input constraints if user only wants to filter
+            // Ranges must be complete
 
             if (!params.filter_by_nucleotide_diversity_start && params.filter_by_nucleotide_diversity_end) {
                 error "ERROR: Start of range for filtering by nucleotide diversity not specified (--filter_by_nucleotide_diversity_start)"
@@ -87,7 +96,7 @@ workflow CORE_PHYLOGENIES {
             }
         }
 
-        if (!params.filter_only && !params.measure_only) {
+        if (params.pipeline_phylo) {
             // Only when it has to make a phylogeny
 
             def valid_methods = ["raxml-ng", "iqtree2", "fasttree"]
@@ -104,28 +113,16 @@ workflow CORE_PHYLOGENIES {
 
 
         // Input data
-        if (!params.measure_only) {
-            // Pipeline only needs input alignments if user wants to filter
+        if (params.pipeline_filter) {
+            // Pipeline needs input alignments if user wants to filter
 
             Channel
                 .fromPath("${params.data}/*.fa*", checkIfExists: true, type: "file")
                 .set {ch_input_alignments}
         }
-        
-        if (!params.filter_only){
-            // Pipeline only needs input phylogenies if user wants to measure
 
-            Channel
-                .fromPath("${params.data}/*.tre", checkIfExists: true, type: "file")
-                .branch { tree ->
-                    reference: tree.endsWith("${params.data_reference}")
-                    queries: true
-                } // Separate reference tree from query trees, if applicable
-                .set {ch_phylogenies}
-        }
-
-        if (!params.filter_only && ! params.measure_only) {
-            // Pipeline needs to set the correct container for MAKE_PHYLOGENY
+        if (params.pipeline_phylo) {
+            // Pipeline needs to set the correct container for MAKE_PHYLOGENY if user wants to make phylogeny
 
             if (params.make_phylogeny_method == "raxml-ng") {
 
@@ -143,6 +140,18 @@ workflow CORE_PHYLOGENIES {
                     .set{ch_container_make_phylogeny}
 
             }
+        }
+
+        if (params.pipeline_measure){
+            // Pipeline needs input phylogenies if user wants to measure
+
+            Channel
+                .fromPath("${params.data}/*.tre", checkIfExists: true, type: "file")
+                .branch { tree ->
+                    reference: tree.endsWith("${params.data_reference}")
+                    queries: true
+                } // Separate reference tree from query trees, if applicable
+                .set {ch_phylogenies}
         }
         
         Channel
@@ -176,8 +185,8 @@ workflow CORE_PHYLOGENIES {
 
 
         // Process flow      
-        if (!params.measure_only) {
-            // Pipeline wont filter if user only wants to measure
+        if (params.pipeline_filter) {
+            // If user wants to filter...
 
             PREPARE_ID(ch_input_alignments
                 .combine(ch_container_base)
@@ -270,8 +279,9 @@ workflow CORE_PHYLOGENIES {
 
         }
 
-        if(!params.measure_only && !params.filter_only) { 
-            // Pipeline wont make a phylogeny if user only wants to filter or measure
+        if(params.pipeline_phylo) { 
+            // Pipeline will only make phylogeny if user only wants to
+            // User can set this to FALSE if they only want to filter or measure
 
             if(params.make_phylogeny_method != 'fasttree') {
                 // Substitution model for raxml-ng and iqtree2
@@ -297,7 +307,7 @@ workflow CORE_PHYLOGENIES {
 
         }
 
-        if(!params.filter_only) {
+        if(params.pipeline_measure) {
             // Pipeline wont measure if user only wants to filter
 
             MEASURE_RF_DISTANCE(ch_phylogeny
