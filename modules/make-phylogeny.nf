@@ -60,6 +60,7 @@ process MAKE_PHYLOGENY {
                 -spr 4 \
                 -mlacc 2 \
                 -slownni \
+                -boot 100 \
                 -out ${id}.support.tre \
                 ${alignment}
 
