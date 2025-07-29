@@ -9,7 +9,7 @@ nextflow_process {
 
         when {
             params {
-
+                make_phylogeny_method = "raxml-ng"
             }
             process {
                 """
@@ -36,7 +36,7 @@ nextflow_process {
 
         when {
             params {
-
+                make_phylogeny_method = "fasttree"
             }
             process {
                 """
@@ -63,7 +63,7 @@ nextflow_process {
 
         when {
             params {
-
+                make_phylogeny_method = "iqtree2"
             }
             process {
                 """

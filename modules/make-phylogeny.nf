@@ -16,7 +16,7 @@ process MAKE_PHYLOGENY {
 
     script:
         """
-        if [ "${container}" = "${params.container_raxml_ng}" ]; then
+        if [ "${params.make_phylogeny_method}" = "raxml-ng" ]; then
         
             export MODEL=\$(cat ${substitution_model} | grep "> raxml-ng" | tail -1 | grep -e "--model.*\$" -o | grep  -e "\\s.*\$" -o)
 
@@ -34,7 +34,7 @@ process MAKE_PHYLOGENY {
 
             mv ${id}.raxml.support ${id}.support.tre
 
-        elif [ "${container}" = "${params.container_iqtree2}" ]; then
+        elif [ "${params.make_phylogeny_method}" = "iqtree2" ]; then
 
             export MODEL=\$(cat ${substitution_model} | grep "> iqtree" | tail -1 | grep -e "-m.*\$" -o | grep  -e "\\s.*\$" -o)
 
@@ -49,7 +49,7 @@ process MAKE_PHYLOGENY {
 
             mv ${id}.treefile ${id}.support.tre
 
-        elif [ "${container}" = "${params.container_fasttree}" ] ; then
+        elif [ "${params.make_phylogeny_method}" = "fasttree" ] ; then
 
             OMP_NUM_THREADS=${task.cpus}
 
