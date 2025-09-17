@@ -17,10 +17,6 @@ nextflow_pipeline {
                 filter_by_nucleotide_diversity_start = 0.1
                 filter_by_nucleotide_diversity_end = 0.8
 
-                // FILTER_BY_DNDS_RATIO
-                filter_by_dnds_ratio_start = 0.1
-                filter_by_dnds_ratio_end = 1.0
-
                 cluster_options = null
             }
         }
