@@ -74,20 +74,6 @@ workflow CORE_PHYLOGENIES {
             error "ERROR: Reference tree for RF distance measurement not specified (--data_reference)"
         }
 
-        if (params.pipeline_filter) {
-            // Pipeline needs to check for input constraints if user only wants to filter
-            // Ranges must be complete
-
-            if (!params.filter_by_nucleotide_diversity_start && params.filter_by_nucleotide_diversity_end) {
-                error "ERROR: Start of range for filtering by nucleotide diversity not specified (--filter_by_nucleotide_diversity_start)"
-            }
-
-            if (params.filter_by_nucleotide_diversity_start && !params.filter_by_nucleotide_diversity_end) {
-                error "ERROR: End of range for filtering by nucleotide diversity not specified (--filter_by_nucleotide_diversity_end)"
-            }
-
-        }
-
         if (params.pipeline_phylo) {
             // Only when it has to make a phylogeny
 
@@ -151,18 +137,13 @@ workflow CORE_PHYLOGENIES {
             .set {ch_filter_by_polymorphic_sites_cutoff}
 
         Channel
-            .of("${params.filter_by_nucleotide_diversity_start}")
-            .set {ch_filter_by_nucleotide_diversity_start}
-        
-        Channel
-            .of("${params.filter_by_nucleotide_diversity_end}")
-            .set {ch_filter_by_nucleotide_diversity_end}
+            .of("${params.filter_by_nucleotide_diversity_cutoff}")
+            .set {ch_filter_by_nucleotide_diversity_cutoff}
 
         Channel
             .of("${params.data.split('/').last()}"
                 .concat("-${params.filter_by_polymorphic_sites_cutoff ?: ''}") // If null, it will be empty
-                .concat("-${params.filter_by_nucleotide_diversity_start  ?: ''}") // ^
-                .concat("-${params.filter_by_nucleotide_diversity_end ?: ''}")) // ^
+                .concat("-${params.filter_by_nucleotide_diversity_cutoff ?: ''}")) // ^
             .set {ch_data_name} // To identify the dataset and constraint values used
 
 
@@ -203,12 +184,11 @@ workflow CORE_PHYLOGENIES {
                     .set {ch_filtered_alignments_1}
             }
 
-            if (params.filter_by_nucleotide_diversity_start && params.filter_by_nucleotide_diversity_end) {
-                // Pipeline will filter by nucleotide diversity if user specified a range
+            if (params.filter_by_nucleotide_diversity_cutoff) {
+                // Pipeline will filter by nucleotide diversity if user specified a cutoff
 
                 FILTER_BY_NUCLEOTIDE_DIVERSITY(ch_filtered_alignments_1
-                    .combine(ch_filter_by_nucleotide_diversity_start)
-                    .combine(ch_filter_by_nucleotide_diversity_end)
+                    .combine(ch_filter_by_nucleotide_diversity_cutoff)
                     .combine(ch_container_base)
                     .combine(ch_cluster_options))
                     .filter( ~/(.)*\/(.)+/ ) // ^^

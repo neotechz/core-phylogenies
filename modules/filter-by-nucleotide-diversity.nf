@@ -8,14 +8,14 @@ process FILTER_BY_NUCLEOTIDE_DIVERSITY {
     clusterOptions "${cluster_options}"
 
     input:
-        tuple val(id), path(input_alignment), val(start), val(end), val(container), val(cluster_options) // ${input_alignment} is a file!
+        tuple val(id), path(input_alignment), val(start), val(container), val(cluster_options) // ${input_alignment} is a file!
     
     output:
         tuple val(id), eval("echo \${RETURN}")
 
     script:
         """
-        ANSWER=`filter-by-nucleotide-diversity-optimized.py ${input_alignment} ${start} ${end}`
+        ANSWER=`filter-by-nucleotide-diversity-optimized.py ${input_alignment} ${start} 1.0`
         if [ "\${ANSWER}" == "TRUE" ]; then
             RETURN="\${PWD}/${input_alignment}"
         else
