@@ -32,7 +32,7 @@ nextflow_process {
         
     }
 
-        test("Returns FALSE if below cutoff") {
+    test("Returns FALSE if below cutoff") {
 
         when {
             params {

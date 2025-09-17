@@ -1,0 +1,34 @@
+nextflow_process {
+
+    name "Test Process FILTER_BY_RANDOM"
+    script "modules/filter-by-random.nf"
+    process "FILTER_BY_RANDOM"
+    profile "local"
+
+    test("Returns TRUE or FALSE randomly") {
+
+        when {
+            params {
+                filter_by_random = true
+            }
+            process {
+                """
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "18S.fasta",
+                    "\${params.container_base}",
+                    null])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out[0][0][0] == "prorocentrum-spp" },
+                { assert process.out[0][0][1] == "TRUE" || process.out[0][0][1] == "FALSE"}
+            )
+        }
+        
+    }
+
+}
