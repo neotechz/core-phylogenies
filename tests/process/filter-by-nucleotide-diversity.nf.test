@@ -5,19 +5,17 @@ nextflow_process {
     process "FILTER_BY_NUCLEOTIDE_DIVERSITY"
     profile "local"
 
-    test("Returns gene alignment file if within range") {
+    test("Returns gene alignment file if above or equal cutoff") {
 
         when {
             params {
-                filter_by_nucleotide_diversity_start = 0.1
-                filter_by_nucleotide_diversity_end = 0.8
+                filter_by_nucleotide_diversity_cutoff = 0.1
             }
             process {
                 """
                 input[0] = Channel.of(["prorocentrum-spp",
                     "${projectDir}/tests/data/prorocentrum-spp-formatted/28S.fasta",
-                    "${params.filter_by_nucleotide_diversity_start}",
-                    "${params.filter_by_nucleotide_diversity_end}",
+                    "${params.filter_by_nucleotide_diversity_cutoff}",
                     "\${params.container_base}",
                     null])
                 """
@@ -34,19 +32,17 @@ nextflow_process {
 
     }
 
-    test("Returns an empty string if outside range") {
+    test("Returns an empty string if below cutoff") {
 
         when {
             params {
-                filter_by_nucleotide_diversity_start = 0.1
-                filter_by_nucleotide_diversity_end = 0.15
+                filter_by_nucleotide_diversity_cutoff = 0.99
             }
             process {
                 """
                 input[0] = Channel.of(["prorocentrum-spp",
                     "${projectDir}/tests/data/prorocentrum-spp-formatted/28S.fasta",
-                    "${params.filter_by_nucleotide_diversity_start}",
-                    "${params.filter_by_nucleotide_diversity_end}",
+                    "${params.filter_by_nucleotide_diversity_cutoff}",
                     "\${params.container_base}",
                     null])
                 """
