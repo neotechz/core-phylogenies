@@ -172,9 +172,11 @@ workflow CORE_PHYLOGENIES {
                     .combine(ch_filter_by_polymorphic_sites_cutoff)
                     .combine(ch_container_base)
                     .combine(ch_cluster_options))
-                    .filter( ~/(.)*\/(.)+/ ) // Only those with valid paths are retained
+                    .filter( ~/(.)*TRUE(.)*/ ) // Only those that return TRUE are kept
+                    .map {gene -> gene[0]} // Extract only the ID from the tuple; this will be the inner join key
                     .collect(flat: false) // ^^^
                     .flatMap {gene -> gene} // ^^^
+                    .join(ch_formatted_alignments) // Join to get the full tuple again
                     .set {ch_filtered_alignments_1}
 
             } else {
@@ -191,9 +193,11 @@ workflow CORE_PHYLOGENIES {
                     .combine(ch_filter_by_nucleotide_diversity_cutoff)
                     .combine(ch_container_base)
                     .combine(ch_cluster_options))
-                    .filter( ~/(.)*\/(.)+/ ) // ^^
+                    .filter( ~/(.)*TRUE(.)*/ ) // ^^
+                    .map {gene -> gene[0]} // ^^^^
                     .collect(flat: false) // ^^^
                     .flatMap {gene -> gene} // ^^^
+                    .join(ch_formatted_alignments) // ^^^^^
                     .set {ch_filtered_alignments_2}
             } else {
                 // No filtering by nucleotide diversity, use previous alignments directly

@@ -17,9 +17,9 @@ process FILTER_BY_POLYMORPHIC_SITES {
         """
         ANSWER=`filter-by-polymorphic-sites.py ${input_alignment} ${cutoff}`
         if [ "\${ANSWER}" == "TRUE" ]; then
-            RETURN="\${PWD}/${input_alignment}"
+            RETURN="TRUE"
         else
-            RETURN=""
+            RETURN="FALSE"
         fi
         """
 }
