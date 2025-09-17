@@ -11,7 +11,7 @@ process FILTER_BY_POLYMORPHIC_SITES {
         tuple val(id), path(input_alignment), val(cutoff), val(container), val(cluster_options) // ${input_alignment} is a file!
     
     output:
-        tuple val(id), eval("echo \${RETURN}")
+        tuple val(id), eval("echo \${RETURN}"), path("${input_alignment}.log")
 
     script:
         """
