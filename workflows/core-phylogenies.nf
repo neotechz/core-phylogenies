@@ -7,7 +7,6 @@ include { PREPARE_ID                     } from '../modules/prepare-id'
 include { FORMAT_HEADERS                 } from '../modules/format-headers'
 include { FILTER_BY_POLYMORPHIC_SITES    } from '../modules/filter-by-polymorphic-sites'
 include { FILTER_BY_NUCLEOTIDE_DIVERSITY } from '../modules/filter-by-nucleotide-diversity'
-include { FILTER_BY_DNDS_RATIO           } from '../modules/filter-by-dnds-ratio'
 include { CONCATENATE_ALIGNMENTS         } from '../modules/concatenate-alignments'
 include { CALCULATE_SUBSTITUTION_MODEL   } from '../modules/calculate-substitution-model'
 include { MAKE_PHYLOGENY                 } from '../modules/make-phylogeny'
@@ -87,13 +86,6 @@ workflow CORE_PHYLOGENIES {
                 error "ERROR: End of range for filtering by nucleotide diversity not specified (--filter_by_nucleotide_diversity_end)"
             }
 
-            if (!params.filter_by_dnds_ratio_start && params.filter_by_dnds_ratio_end) {
-                error "ERROR: Start of range for filtering by dN/dS ratio not specified (--filter_by_dnds_ratio_start)"
-            }
-
-            if (params.filter_by_dnds_ratio_start && !params.filter_by_dnds_ratio_end) {
-                error "ERROR: End of range for filtering by dN/dS ratio not specified (--filter_by_dnds_ratio_end)"
-            }
         }
 
         if (params.pipeline_phylo) {
@@ -167,20 +159,10 @@ workflow CORE_PHYLOGENIES {
             .set {ch_filter_by_nucleotide_diversity_end}
 
         Channel
-            .of("${params.filter_by_dnds_ratio_start}")
-            .set {ch_filter_by_dnds_ratio_start}
-        
-        Channel
-            .of("${params.filter_by_dnds_ratio_end}")
-            .set {ch_filter_by_dnds_ratio_end}
-
-        Channel
             .of("${params.data.split('/').last()}"
                 .concat("-${params.filter_by_polymorphic_sites_cutoff ?: ''}") // If null, it will be empty
                 .concat("-${params.filter_by_nucleotide_diversity_start  ?: ''}") // ^
-                .concat("-${params.filter_by_nucleotide_diversity_end ?: ''}") // ^
-                .concat("-${params.filter_by_dnds_ratio_start ?: ''}") // ^
-                .concat("-${params.filter_by_dnds_ratio_end  ?: ''}")) // ^
+                .concat("-${params.filter_by_nucleotide_diversity_end ?: ''}")) // ^
             .set {ch_data_name} // To identify the dataset and constraint values used
 
 
@@ -239,29 +221,9 @@ workflow CORE_PHYLOGENIES {
                 ch_filtered_alignments_1
                     .set {ch_filtered_alignments_2}
             }
-            
-            if (params.filter_by_dnds_ratio_start && params.filter_by_dnds_ratio_end) {
-                // Pipeline will filter by dN/dS ratio if user specified a range
-
-                FILTER_BY_DNDS_RATIO(ch_filtered_alignments_2
-                    .combine(ch_filter_by_dnds_ratio_start)
-                    .combine(ch_filter_by_dnds_ratio_end)
-                    .combine(ch_container_base)
-                    .combine(ch_cluster_options))
-                    .filter( ~/(.)*\/(.)+/ ) // ^^
-                    .collect(flat: false) // ^^^
-                    .flatMap {gene -> gene} // ^^^
-                    .set {ch_filtered_alignments_3}
-
-            } else {
-                // No filtering by dN/dS ratio, use previous alignments directly
-
-                ch_filtered_alignments_2
-                    .set {ch_filtered_alignments_3}
-            }
 
             CONCATENATE_ALIGNMENTS(ch_data_name
-                .combine(ch_filtered_alignments_3
+                .combine(ch_filtered_alignments_2
                 .map {gene -> gene[1]} // Extract the alignment path from the tuple
                 .reduce("") {gene_1, gene_2 -> "$gene_1 $gene_2"}) // Concatenate all alignment paths
                 .combine(ch_container_base)
