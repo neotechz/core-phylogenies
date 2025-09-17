@@ -5,6 +5,7 @@ include { resolveContainerPath } from '../utils/resolve-container-path'
 // Default module imports
 include { PREPARE_ID                     } from '../modules/prepare-id'
 include { FORMAT_HEADERS                 } from '../modules/format-headers'
+include { FILTER_BY_RANDOM               } from '../modules/filter-by-random'
 include { FILTER_BY_POLYMORPHIC_SITES    } from '../modules/filter-by-polymorphic-sites'
 include { FILTER_BY_NUCLEOTIDE_DIVERSITY } from '../modules/filter-by-nucleotide-diversity'
 include { CONCATENATE_ALIGNMENTS         } from '../modules/concatenate-alignments'
@@ -142,6 +143,7 @@ workflow CORE_PHYLOGENIES {
 
         Channel
             .of("${params.data.split('/').last()}"
+                .concat("${params.filter_by_random ? '-random' : ''}") // If true, add -random
                 .concat("-${params.filter_by_polymorphic_sites_cutoff ?: ''}") // If null, it will be empty
                 .concat("-${params.filter_by_nucleotide_diversity_cutoff ?: ''}")) // ^
             .set {ch_data_name} // To identify the dataset and constraint values used
@@ -165,11 +167,11 @@ workflow CORE_PHYLOGENIES {
                 .flatMap {gene -> gene} // ^^^
                 .set {ch_formatted_alignments}
 
-            if (params.filter_by_polymorphic_sites_cutoff) {
-                // Pipeline will filter by polymorphic sites if user specified a cutoff
+            if (params.filter_by_random) {
+                // Pipeline will filter by random if user set this to true
 
-                FILTER_BY_POLYMORPHIC_SITES(ch_formatted_alignments
-                    .combine(ch_filter_by_polymorphic_sites_cutoff)
+                FILTER_BY_RANDOM(ch_formatted_alignments
+                    .map {gene -> [gene[0], gene[1].getBaseName()]} // Map to the name of the alignment file without path
                     .combine(ch_container_base)
                     .combine(ch_cluster_options))
                     .filter( ~/(.)*TRUE(.)*/ ) // Only those that return TRUE are kept
@@ -186,10 +188,31 @@ workflow CORE_PHYLOGENIES {
                     .set {ch_filtered_alignments_1}
             }
 
+            if (params.filter_by_polymorphic_sites_cutoff) {
+                // Pipeline will filter by polymorphic sites if user specified a cutoff
+
+                FILTER_BY_POLYMORPHIC_SITES(ch_filtered_alignments_1
+                    .combine(ch_filter_by_polymorphic_sites_cutoff)
+                    .combine(ch_container_base)
+                    .combine(ch_cluster_options))
+                    .filter( ~/(.)*TRUE(.)*/ ) // Only those that return TRUE are kept
+                    .map {gene -> gene[0]} // Extract only the ID from the tuple; this will be the inner join key
+                    .collect(flat: false) // ^^^
+                    .flatMap {gene -> gene} // ^^^
+                    .join(ch_formatted_alignments) // Join to get the full tuple again
+                    .set {ch_filtered_alignments_2}
+
+            } else {
+                 // No filtering by polymorphic sites, use formatted alignments directly
+
+                ch_filtered_alignments_1
+                    .set {ch_filtered_alignments_2}
+            }
+
             if (params.filter_by_nucleotide_diversity_cutoff) {
                 // Pipeline will filter by nucleotide diversity if user specified a cutoff
 
-                FILTER_BY_NUCLEOTIDE_DIVERSITY(ch_filtered_alignments_1
+                FILTER_BY_NUCLEOTIDE_DIVERSITY(ch_filtered_alignments_2
                     .combine(ch_filter_by_nucleotide_diversity_cutoff)
                     .combine(ch_container_base)
                     .combine(ch_cluster_options))
@@ -198,16 +221,16 @@ workflow CORE_PHYLOGENIES {
                     .collect(flat: false) // ^^^
                     .flatMap {gene -> gene} // ^^^
                     .join(ch_formatted_alignments) // ^^^^^
-                    .set {ch_filtered_alignments_2}
+                    .set {ch_filtered_alignments_3}
             } else {
                 // No filtering by nucleotide diversity, use previous alignments directly
 
-                ch_filtered_alignments_1
-                    .set {ch_filtered_alignments_2}
+                ch_filtered_alignments_2
+                    .set {ch_filtered_alignments_3}
             }
 
             CONCATENATE_ALIGNMENTS(ch_data_name
-                .combine(ch_filtered_alignments_2
+                .combine(ch_filtered_alignments_3
                 .map {gene -> gene[1]} // Extract the alignment path from the tuple
                 .reduce("") {gene_1, gene_2 -> "$gene_1 $gene_2"}) // Concatenate all alignment paths
                 .combine(ch_container_base)

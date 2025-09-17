@@ -8,7 +8,7 @@ process FORMAT_HEADERS {
     clusterOptions "${cluster_options}"
 
     input:
-        tuple val(id), path(input_alignment), val(container), val(cluster_options) // ${input_alignments} is a directory!
+        tuple val(id), path(input_alignment), val(container), val(cluster_options) // ${input_alignment} is a file!
     
     output:
         tuple val(id), path("formatted-alignments/*")
