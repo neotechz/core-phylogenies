@@ -5,7 +5,7 @@ nextflow_process {
     process "FILTER_BY_NUCLEOTIDE_DIVERSITY"
     profile "local"
 
-    test("Returns gene alignment file if above or equal cutoff") {
+    test("Returns TRUE if above or equal cutoff") {
 
         when {
             params {
@@ -26,13 +26,13 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert process.out[0][0][0] == "prorocentrum-spp" },
-                { assert path("${process.out[0][0][1]}").exists() }
+                { assert process.out[0][0][1] == "TRUE" }
             )
         }
 
     }
 
-    test("Returns an empty string if below cutoff") {
+    test("Returns FALSE if below cutoff") {
 
         when {
             params {
@@ -53,7 +53,7 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert process.out[0][0][0] == "prorocentrum-spp" },
-                { assert process.out[0][0][1] == "" }
+                { assert process.out[0][0][1] == "FALSE" }
             )
         }
         
