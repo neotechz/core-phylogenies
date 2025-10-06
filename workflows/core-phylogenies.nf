@@ -188,6 +188,9 @@ workflow CORE_PHYLOGENIES {
                     .set {ch_filtered_alignments_1}
             }
 
+            ch_filtered_alignments_1
+                .ifEmpty { error "ERROR: No gene alignments left after filtering steps; please adjust filtering parameters" }
+
             if (params.filter_by_polymorphic_sites_cutoff) {
                 // Pipeline will filter by polymorphic sites if user specified a cutoff
 
@@ -209,6 +212,9 @@ workflow CORE_PHYLOGENIES {
                     .set {ch_filtered_alignments_2}
             }
 
+            ch_filtered_alignments_2
+                .ifEmpty { error "ERROR: No gene alignments left after filtering steps; please adjust filtering parameters" }
+
             if (params.filter_by_nucleotide_diversity_cutoff) {
                 // Pipeline will filter by nucleotide diversity if user specified a cutoff
 
@@ -228,6 +234,9 @@ workflow CORE_PHYLOGENIES {
                 ch_filtered_alignments_2
                     .set {ch_filtered_alignments_3}
             }
+
+            ch_filtered_alignments_3
+                .ifEmpty { error "ERROR: No gene alignments left after filtering steps; please adjust filtering parameters" }
 
             CONCATENATE_ALIGNMENTS(ch_data_name
                 .combine(ch_filtered_alignments_3
