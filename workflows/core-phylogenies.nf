@@ -182,7 +182,7 @@ workflow CORE_PHYLOGENIES {
                     .set {ch_filtered_alignments_1}
 
             } else {
-                 // No filtering by polymorphic sites, use formatted alignments directly
+                // No filtering randomly, use formatted alignments directly
 
                 ch_formatted_alignments
                     .set {ch_filtered_alignments_1}
