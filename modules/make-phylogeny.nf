@@ -55,11 +55,6 @@ process MAKE_PHYLOGENY {
 
             FastTreeMP \
                 -quiet \
-                -gtr \
-                -gamma \
-                -spr 4 \
-                -mlacc 2 \
-                -slownni \
                 -boot 100 \
                 -out ${id}.support.tre \
                 ${alignment}
