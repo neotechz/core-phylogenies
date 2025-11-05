@@ -1,0 +1,34 @@
+nextflow_process {
+
+    name "Test Process REMOVE_INVARIABLE_SITES"
+    script "modules/remove-invariable-sites.nf"
+    process "REMOVE_INVARIABLE_SITES"
+    profile "local"
+
+    test("Removes invariable sites from alignment") {
+
+        when {
+            params {
+
+            }
+            process {  
+                """
+                input[0] = Channel.of(["prorocentrum-spp",
+                    "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta",
+                    "\${params.container_iqtree2}",
+                    null])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out[0][0][0] == "prorocentrum-spp" },
+                { assert new File(process.out[0][0][1]).exists()} // {id}-varsites.phy
+            )
+        }
+        
+    }
+
+}
