@@ -209,9 +209,9 @@ nextflow_pipeline {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert workflow.trace.succeeded().size() == 11 },
+                { assert workflow.trace.succeeded().size() == 12 },
                 { assert workflow.trace.failed().size() == 0 }, 
-                { assert workflow.trace.tasks().size() == 11 }
+                { assert workflow.trace.tasks().size() == 12 }
 
                 // 2 PREPARE_ID
                 // 2 FORMAT_HEADERS
@@ -219,6 +219,7 @@ nextflow_pipeline {
                 // 2 FILTER_BY_POLYMORPHIC_SITES
                 // 2 FILTER_BY_NUCLEOTIDE_DIVERSITY
                 // 1 CONCATENATE_ALIGNMENTS
+                // 1 REMOVE_INVARIABLE_SITES
                 // 1 CALCULATE_SUBSTITUTION_MODEL
                 // 1 MAKE_PHYLOGENY
             )
@@ -251,9 +252,9 @@ nextflow_pipeline {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert workflow.trace.succeeded().size() == 11 },
+                { assert workflow.trace.succeeded().size() == 12 },
                 { assert workflow.trace.failed().size() == 0 }, 
-                { assert workflow.trace.tasks().size() == 11 }
+                { assert workflow.trace.tasks().size() == 12 }
 
                 // 2 PREPARE_ID
                 // 2 FORMAT_HEADERS
@@ -261,6 +262,7 @@ nextflow_pipeline {
                 // 2 FILTER_BY_POLYMORPHIC_SITES
                 // 2 FILTER_BY_NUCLEOTIDE_DIVERSITY
                 // 1 CONCATENATE_ALIGNMENTS
+                // 1 REMOVE_INVARIABLE_SITES
                 // 1 CALCULATE_SUBSTITUTION_MODEL
                 // 1 MAKE_PHYLOGENY
             )
