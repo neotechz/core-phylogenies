@@ -14,7 +14,7 @@ nextflow_process {
             process {
                 """
                 input[0] = Channel.of(["prorocentrum-spp",
-                    "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta",
+                    "${projectDir}/tests/data/prorocentrum-spp-varsites.phy",
                     "${projectDir}/tests/data/prorocentrum-spp-substitution-model.out",
                     "\${params.container_raxml_ng}",
                     null])
@@ -41,7 +41,7 @@ nextflow_process {
             process {
                 """
                 input[0] = Channel.of(["prorocentrum-spp",
-                    "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta",
+                    "${projectDir}/tests/data/prorocentrum-spp-varsites.phy",
                     "${projectDir}/tests/data/prorocentrum-spp-substitution-model.out",
                     "\${params.container_fasttree}",
                     null])
@@ -68,7 +68,7 @@ nextflow_process {
             process {
                 """
                 input[0] = Channel.of(["prorocentrum-spp",
-                    "${projectDir}/tests/data/prorocentrum-spp-aligned.fasta",
+                    "${projectDir}/tests/data/prorocentrum-spp-varsites.phy",
                     "${projectDir}/tests/data/prorocentrum-spp-substitution-model.out",
                     "\${params.container_iqtree2}",
                     null])
