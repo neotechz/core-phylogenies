@@ -23,7 +23,7 @@ process MAKE_PHYLOGENY {
             raxml-ng \
                 --all \
                 --msa ${alignment} \
-                --model \$MODEL \
+                --model \${MODEL}+ASC_LEWIS \
                 --prefix \${PWD}/${id} \
                 --seed 119318 \
                 --bs-metric tbe \
@@ -40,7 +40,7 @@ process MAKE_PHYLOGENY {
 
             iqtree2 \
                 -s ${alignment} \
-                -m \$MODEL \
+                -m \${MODEL}+ASC \
                 -b ${params.make_phylogeny_bootstraps} \
                 -fast \
                 -T ${task.cpus} \
