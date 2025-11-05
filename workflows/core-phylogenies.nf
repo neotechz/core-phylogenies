@@ -9,6 +9,7 @@ include { FILTER_BY_RANDOM               } from '../modules/filter-by-random'
 include { FILTER_BY_POLYMORPHIC_SITES    } from '../modules/filter-by-polymorphic-sites'
 include { FILTER_BY_NUCLEOTIDE_DIVERSITY } from '../modules/filter-by-nucleotide-diversity'
 include { CONCATENATE_ALIGNMENTS         } from '../modules/concatenate-alignments'
+include { REMOVE_INVARIABLE_SITES        } from '../modules/remove-invariable-sites'
 include { CALCULATE_SUBSTITUTION_MODEL   } from '../modules/calculate-substitution-model'
 include { MAKE_PHYLOGENY                 } from '../modules/make-phylogeny'
 include { MEASURE_RF_DISTANCE            } from '../modules/measure-rf-distance'
@@ -262,22 +263,34 @@ workflow CORE_PHYLOGENIES {
             // User can set this to FALSE if they only want to filter or measure
 
             if(params.make_phylogeny_method != 'fasttree') {
+                // Get variable sites only for raxml-ng and iqtree2
+
+                REMOVE_INVARIABLE_SITES(ch_concatenated_alignment
+                    .combine(ch_container_iqtree2)
+                    .combine(ch_cluster_options))
+                    .set {ch_varsites_alignment}
+
                 // Substitution model for raxml-ng and iqtree2
 
-                CALCULATE_SUBSTITUTION_MODEL(ch_concatenated_alignment
+                CALCULATE_SUBSTITUTION_MODEL(ch_varsites_alignment
                     .combine(ch_container_modeltest_ng)
                     .combine(ch_cluster_options))
                     .set {ch_substitution_model} 
 
             } else {
-                // No model needed for fasttree
+                // Invariable sites are not removed for fasttree
 
                 ch_concatenated_alignment
+                    .set {ch_varsites_alignment}
+
+                // No model needed for fasttree
+
+                ch_varsites_alignment
                     .map {alignment -> [alignment[0], "/"]} // Get only the ID, second element is filler
                     .set {ch_substitution_model} 
             }
 
-            MAKE_PHYLOGENY(ch_concatenated_alignment
+            MAKE_PHYLOGENY(ch_varsites_alignment
                 .join(ch_substitution_model)
                 .combine(ch_container_make_phylogeny)  // Depends on which method is used ('raxml-ng', 'iqtree2', 'fastttree')
                 .combine(ch_cluster_options))
