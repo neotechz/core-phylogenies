@@ -86,7 +86,7 @@ workflow CORE_PHYLOGENIES {
             }
 
             if (!valid_methods.contains(params.make_phylogeny_method)) {
-                error "ERROR: Invalid value for MAKE_PHLOGENY method ('raxml-ng', 'iqtree2', 'fasttree')"
+                error "ERROR: Invalid value for MAKE_PHYLOGENY method ('raxml-ng', 'iqtree2', 'fasttree')"
             }
 
         }
