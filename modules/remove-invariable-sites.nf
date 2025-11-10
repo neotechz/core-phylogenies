@@ -10,11 +10,10 @@ process REMOVE_INVARIABLE_SITES {
         tuple val(id), path(alignment), val(container), val(cluster_options)
     
     output:
-        tuple val(id), path("${id}-varsites.phy")
+        tuple val(id), path("${id}-varsites.fasta")
 
     script:
         """
-        iqtree2 -s ${alignment} -m MFP+ASC 2> /dev/null || true
-        mv ${alignment}.varsites.phy ${id}-varsites.phy
+        snp-sites -o ${id}-varsites.fasta ${alignment}
         """
 }
