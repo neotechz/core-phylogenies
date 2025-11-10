@@ -54,6 +54,10 @@ workflow CORE_PHYLOGENIES {
             .of("${resolveContainerPath(params.container_fasttree)}")
             .set {ch_container_fasttree}
 
+        Channel
+            .of("${resolveContainerPath(params.container_snp_sites)}")
+            .set {ch_container_snp_sites}
+
 
         // Error handling for input params
         if (!params.data) {
@@ -266,7 +270,7 @@ workflow CORE_PHYLOGENIES {
                 // Get variable sites only for raxml-ng and iqtree2
 
                 REMOVE_INVARIABLE_SITES(ch_concatenated_alignment
-                    .combine(ch_container_iqtree2)
+                    .combine(ch_container_snp_sites)
                     .combine(ch_cluster_options))
                     .set {ch_varsites_alignment}
 
