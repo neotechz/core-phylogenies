@@ -14,6 +14,6 @@ process REMOVE_INVARIABLE_SITES {
 
     script:
         """
-        snp-sites -o ${id}-varsites.fasta ${alignment}
+        snp-sites -c -o ${id}-varsites.fasta ${alignment}
         """
 }
