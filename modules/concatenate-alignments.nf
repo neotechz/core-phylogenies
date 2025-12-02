@@ -5,6 +5,7 @@ process CONCATENATE_ALIGNMENTS {
     publishDir "${params.results}/concatenate-alignments", mode: "copy"
     container "${container}"
     clusterOptions "${cluster_options}"
+    cache "deep"
 
     input:
         tuple val(id), val(input_alignments), val(container), val(cluster_options) // ${input_alignments} is a string of paths!

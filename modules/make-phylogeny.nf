@@ -6,7 +6,7 @@ process MAKE_PHYLOGENY {
     publishDir "${params.results}/make-phylogeny", mode: "copy"
     container "${container}"
     clusterOptions "${cluster_options}"
-    cache "deep"
+    cache false
 
     input:
         tuple val(id), path(alignment), path(substitution_model), val(container), val(cluster_options)

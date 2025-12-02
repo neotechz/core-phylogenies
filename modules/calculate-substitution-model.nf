@@ -5,6 +5,7 @@ process CALCULATE_SUBSTITUTION_MODEL {
     publishDir "${params.results}/calculate-substitution-model", mode: "copy"
     container "${container}"
     clusterOptions "${cluster_options}"
+    cache "deep"
 
     input:
         tuple val(id), path(alignment), val(container), val(cluster_options)
