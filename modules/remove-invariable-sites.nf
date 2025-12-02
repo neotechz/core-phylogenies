@@ -5,6 +5,7 @@ process REMOVE_INVARIABLE_SITES {
     publishDir "${params.results}/remove-invariable-sites", mode: "copy"
     container "${container}"
     clusterOptions "${cluster_options}"
+    cache "deep"
 
     input:
         tuple val(id), path(alignment), val(container), val(cluster_options)
